@@ -1,10 +1,12 @@
 // src/app/api/chat/route.ts
+import { z } from 'zod';
 import { groq } from '@ai-sdk/groq';
 import { 
   streamText, 
   convertToModelMessages, 
   createUIMessageStreamResponse, 
-  toUIMessageStream 
+  toUIMessageStream,
+  tool 
 } from 'ai';
 import { getKnowledgeBase } from '@/lib/knowledge';
 
@@ -22,22 +24,35 @@ export async function POST(req: Request) {
   Your primary job is to answer questions about Vedant's experience, skills, and projects in a helpful, conversational, and professional tone.
   
   IMPORTANT RULES:
-  - DO NOT pretend to be Vedant. You are an AI assistant representing his portfolio. Use phrases like "Vedant has worked on..." or "He built..."
+  - DO NOT pretend to be Vedant. You are an AI assistant representing his portfolio.
   - ONLY use the information provided in the CONTEXT below.
-  - If a user asks something not in the context, politely inform them that you don't have that specific information in the portfolio. Do not hallucinate or invent details.
-  - Keep responses concise, scannable, and easy to read.
-  - Use markdown formatting (bullet points, bold text) where appropriate to make information visually appealing.
+  - When the user asks about a project, YOU MUST ONLY CALL THE 'showProjectCard' TOOL. 
+  - DO NOT describe the project in normal text or markdown tables. Stop talking and just trigger the tool.
 
   CONTEXT ABOUT VEDANT:
   ${contextString}`;
 
-  // 1. Await the conversion of UIMessages to ModelMessages
   const modelMessages = await convertToModelMessages(messages);
 
   const result = streamText({
-    model: groq('openai/gpt-oss-20b'), // The new supported model ID
+    // Using the Qwen model that your account has access to!
+    model: groq('qwen/qwen3.6-27b'), 
     system: systemPrompt,
     messages: modelMessages,
+    tools: {
+      showProjectCard: tool({
+        description: 'Display a visual project card. Call this tool whenever the user asks about a specific project or wants to see your work.',
+        inputSchema: z.object({
+          title: z.string().describe('The name of the project'),
+          description: z.string().describe('A 1-2 sentence description of the project'),
+          technologies: z.array(z.string()).describe('An array of technologies used (e.g. React, Next.js)'),
+          link: z.string().url().optional().describe('The github or live URL if available'),
+        }),
+        execute: async (args) => {
+          return args; 
+        },
+      }),
+    },
   });
 
   return createUIMessageStreamResponse({

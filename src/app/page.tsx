@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Briefcase, Layers, Sparkles, Mail, ArrowRight, Bot, Loader2, Plus } from "lucide-react";
+import { User, Briefcase, Layers, Sparkles, Mail, ArrowRight, Bot, Loader2, Plus, Code } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -42,12 +42,10 @@ export default function Home() {
   return (
     <main className="relative flex min-h-screen flex-col items-center selection:bg-neutral-200">
       
-      {/* Background Watermark */}
       <div className="pointer-events-none fixed inset-0 flex items-center justify-center overflow-hidden opacity-[0.03] select-none">
         <span className="text-[18vw] font-black tracking-tighter">VEDANT</span>
       </div>
 
-      {/* --- STICKY HEADER --- */}
       <AnimatePresence>
         {messages.length > 0 && (
           <motion.div
@@ -73,20 +71,17 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* --- MAIN CONTENT AREA --- */}
       <div className={cn(
         "flex w-full max-w-3xl flex-col px-4 relative z-10",
         messages.length === 0 ? "flex-1 justify-center items-center" : "pt-24 pb-48" 
       )}>
         
-        {/* Error Banner */}
         {error && (
           <div className="absolute top-24 left-1/2 -translate-x-1/2 w-full max-w-md rounded-xl bg-red-50 border border-red-200 p-4 text-sm text-red-600 shadow-sm z-50 text-center">
             <strong>API Error:</strong> {error.message || "Failed to connect to the AI model."}
           </div>
         )}
 
-        {/* Landing Hero */}
         {messages.length === 0 && (
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
@@ -104,33 +99,60 @@ export default function Home() {
           </motion.div>
         )}
 
-        {/* Chat Messages */}
         {messages.length > 0 && (
           <div className="flex flex-col space-y-6 w-full">
             <AnimatePresence>
-              {messages.map((msg) => (
-                <motion.div
-                  key={msg.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={cn(
-                    "flex w-full gap-4 rounded-2xl p-4",
-                    msg.role === "user" ? "bg-neutral-50" : "bg-transparent"
-                  )}
-                >
-                  <div className={cn(
-                    "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
-                    msg.role === "user" ? "bg-neutral-200 text-neutral-600" : "bg-blue-600 text-white"
-                  )}>
-                    {msg.role === "user" ? <User className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
-                  </div>
-                  
-                  <div className="flex-1 space-y-2 overflow-hidden text-neutral-800">
-                    {msg.parts && msg.parts.length > 0 ? (
-                      msg.parts.map((part, index) => (
-                        part.type === "text" ? (
+              {messages.map((msg) => {
+                
+                // --- ULTIMATE BRUTE FORCE PARSER ---
+                const anyMsg = msg as any;
+                
+                // 1. Extract Text
+                const textParts = anyMsg.parts?.filter((p: any) => p.type === "text") || [];
+                const fallbackText = anyMsg.text || anyMsg.content || "";
+                const hasText = textParts.length > 0 || fallbackText.length > 0;
+
+                // 2. Extract Tools (Catching the weird Qwen SDK structure)
+                const extractedTools: any[] = [];
+                if (Array.isArray(anyMsg.toolInvocations)) {
+                  extractedTools.push(...anyMsg.toolInvocations);
+                }
+                if (Array.isArray(anyMsg.parts)) {
+                  anyMsg.parts.forEach((p: any) => {
+                    // Catch normal tool calls AND the literal "tool-showProjectCard" type
+                    if (p.type === 'tool-invocation' || p.type === 'tool-call' || p.type?.startsWith('tool-')) {
+                      extractedTools.push(p.toolInvocation || p);
+                    }
+                  });
+                }
+                
+                const uniqueTools = Array.from(new Map(extractedTools.map(t => [t.toolCallId || Math.random(), t])).values());
+                const isCompletelyBlank = !hasText && uniqueTools.length === 0;
+
+                return (
+                  <motion.div
+                    key={msg.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={cn(
+                      "flex w-full gap-4 rounded-2xl p-4",
+                      msg.role === "user" ? "bg-neutral-50" : "bg-transparent"
+                    )}
+                  >
+                    <div className={cn(
+                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg mt-1",
+                      msg.role === "user" ? "bg-neutral-200 text-neutral-600" : "bg-blue-600 text-white"
+                    )}>
+                      {msg.role === "user" ? <User className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
+                    </div>
+                    
+                    <div className="flex-1 space-y-2 overflow-hidden text-neutral-800">
+                      
+                      {/* RENDER TEXT */}
+                      {textParts.length > 0 ? (
+                        textParts.map((part: any, index: number) => (
                           <ReactMarkdown 
-                            key={index}
+                            key={`text-${index}`}
                             remarkPlugins={[remarkGfm]}
                             components={{
                               p: ({node, ...props}) => <p className="mb-4 last:mb-0 leading-relaxed" {...props} />,
@@ -143,14 +165,85 @@ export default function Home() {
                           >
                             {part.text}
                           </ReactMarkdown>
-                        ) : null
-                      ))
-                    ) : (
-                      <p className="leading-relaxed">{(msg as any).text || (msg as any).content}</p>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
+                        ))
+                      ) : fallbackText ? (
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {fallbackText}
+                        </ReactMarkdown>
+                      ) : null}
+
+                      {/* RENDER TOOLS */}
+                      {uniqueTools.map((tool: any, index: number) => {
+                        // Extract toolName even if it's baked into the type string
+                        const toolName = tool.toolName || (tool.type === 'tool-showProjectCard' ? 'showProjectCard' : null);
+
+                        if (toolName === "showProjectCard") {
+                          // Extract data from the input, output, args, OR result (depending on SDK quirks)
+                          const project = tool.input || tool.output || tool.args || tool.result;
+
+                          // Loading state
+                          if (!project || Object.keys(project).length === 0) {
+                            return (
+                              <div key={`loading-${index}`} className="my-4 animate-pulse rounded-2xl border border-neutral-200 bg-neutral-50 p-5 h-32 flex items-center justify-center">
+                                <span className="text-sm font-medium text-neutral-400">Loading project details...</span>
+                              </div>
+                            )
+                          }
+
+                          return (
+                            <motion.div 
+                              key={`tool-${index}`}
+                              initial={{ opacity: 0, scale: 0.95 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              className="my-4 flex flex-col gap-3 rounded-2xl border border-neutral-200 bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
+                            >
+                              <div className="flex items-center gap-2">
+                                <Code className="h-5 w-5 text-blue-600" />
+                                <h3 className="font-bold text-neutral-900 text-lg">
+                                  {project.title || "Loading Project..."}
+                               </h3>
+                              </div>
+                              
+                              <p className="text-sm text-neutral-600 leading-relaxed">
+                                {project.description}
+                              </p>
+                              
+                              <div className="flex flex-wrap gap-2 mt-1">
+                                {project.technologies?.map((tech: string, i: number) => (
+                                  <span key={i} className="rounded-md bg-neutral-100 px-2 py-1 text-[11px] font-semibold tracking-wide text-neutral-600 uppercase">
+                                    {tech}
+                                  </span>
+                                ))}
+                              </div>
+
+                              {project.link && (
+                                <a 
+                                  href={project.link} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer" 
+                                  className="mt-2 w-fit inline-flex items-center gap-1.5 rounded-lg bg-neutral-900 px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-neutral-800"
+                                >
+                                  View Live Project <ArrowRight className="h-3 w-3" />
+                                </a>
+                              )}
+                            </motion.div>
+                          );
+                        }
+                        return null;
+                      })}
+
+                      {/* DEBUG FALLBACK */}
+                      {isCompletelyBlank && msg.role === 'assistant' && !isLoading && (
+                        <div className="bg-red-50 border border-red-200 p-4 rounded-xl text-xs overflow-auto font-mono text-red-600">
+                          <strong>Debug Data (UI Render Failed):</strong>
+                          <pre className="mt-2">{JSON.stringify(anyMsg, null, 2)}</pre>
+                        </div>
+                      )}
+
+                    </div>
+                  </motion.div>
+                );
+              })}
               
               {isLoading && messages[messages.length - 1]?.role === "user" && (
                 <motion.div
@@ -170,7 +263,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* --- FIXED BOTTOM INPUT AREA --- */}
         <div className={cn(
           "w-full max-w-2xl z-50 flex flex-col transition-all duration-500 ease-in-out",
           messages.length === 0 
@@ -178,7 +270,6 @@ export default function Home() {
             : "fixed bottom-6 left-1/2 -translate-x-1/2 px-4" 
         )}>
           
-          {/* Quick Actions (Chat State) - Horizontal scrolling pills ABOVE the input */}
           {messages.length > 0 && (
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
@@ -201,7 +292,6 @@ export default function Home() {
             </motion.div>
           )}
 
-          {/* Input Form */}
           <form 
             onSubmit={handleSubmit}
             className="relative flex w-full items-center shadow-lg rounded-full"
@@ -223,33 +313,6 @@ export default function Home() {
               <ArrowRight className="h-4 w-4" />
             </button>
           </form>
-
-          {/* Quick Actions (Landing State) - Big square buttons BELOW the input */}
-          {messages.length === 0 && (
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-              className="mt-8 flex flex-wrap justify-center gap-2 w-full"
-            >
-              {QUICK_ACTIONS.map((action) => {
-                const Icon = action.icon;
-                return (
-                  <button
-                    key={action.id}
-                    onClick={() => handleActionClick(action.prompt)}
-                    className="group flex flex-col items-center justify-center rounded-2xl border border-neutral-100 bg-white px-4 py-3 shadow-[0_2px_8px_rgba(0,0,0,0.03)] transition-all duration-200 hover:-translate-y-0.5 hover:border-neutral-200 hover:shadow-md"
-                  >
-                    <Icon className="h-4 w-4 text-neutral-500 transition-colors group-hover:text-blue-600" />
-                    <span className="mt-1.5 text-xs font-medium text-neutral-600 group-hover:text-neutral-900">
-                      {action.label}
-                    </span>
-                  </button>
-                );
-              })}
-            </motion.div>
-          )}
-
         </div>
       </div>
     </main>
