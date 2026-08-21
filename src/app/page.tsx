@@ -104,22 +104,19 @@ export default function Home() {
             <AnimatePresence>
               {messages.map((msg) => {
                 
-                // --- ULTIMATE BRUTE FORCE PARSER ---
                 const anyMsg = msg as any;
                 
-                // 1. Extract Text
+                // 1. Extract Only Text (Ignore Reasoning)
                 const textParts = anyMsg.parts?.filter((p: any) => p.type === "text") || [];
                 const fallbackText = anyMsg.text || anyMsg.content || "";
-                const hasText = textParts.length > 0 || fallbackText.length > 0;
 
-                // 2. Extract Tools (Catching the weird Qwen SDK structure)
+                // 2. Extract Tools 
                 const extractedTools: any[] = [];
                 if (Array.isArray(anyMsg.toolInvocations)) {
                   extractedTools.push(...anyMsg.toolInvocations);
                 }
                 if (Array.isArray(anyMsg.parts)) {
                   anyMsg.parts.forEach((p: any) => {
-                    // Catch normal tool calls AND the literal "tool-showProjectCard" type
                     if (p.type === 'tool-invocation' || p.type === 'tool-call' || p.type?.startsWith('tool-')) {
                       extractedTools.push(p.toolInvocation || p);
                     }
@@ -127,7 +124,6 @@ export default function Home() {
                 }
                 
                 const uniqueTools = Array.from(new Map(extractedTools.map(t => [t.toolCallId || Math.random(), t])).values());
-                const isCompletelyBlank = !hasText && uniqueTools.length === 0;
 
                 return (
                   <motion.div
@@ -148,24 +144,26 @@ export default function Home() {
                     
                     <div className="flex-1 space-y-2 overflow-hidden text-neutral-800">
                       
-                      {/* RENDER TEXT */}
+                      {/* RENDER TEXT ONLY */}
                       {textParts.length > 0 ? (
-                        textParts.map((part: any, index: number) => (
-                          <ReactMarkdown 
-                            key={`text-${index}`}
-                            remarkPlugins={[remarkGfm]}
-                            components={{
-                              p: ({node, ...props}) => <p className="mb-4 last:mb-0 leading-relaxed" {...props} />,
-                              ul: ({node, ...props}) => <ul className="mb-4 list-disc pl-6 space-y-1" {...props} />,
-                              ol: ({node, ...props}) => <ol className="mb-4 list-decimal pl-6 space-y-1" {...props} />,
-                              li: ({node, ...props}) => <li className="leading-relaxed" {...props} />,
-                              strong: ({node, ...props}) => <strong className="font-semibold text-neutral-950" {...props} />,
-                              a: ({node, ...props}) => <a className="text-blue-600 hover:underline font-medium" target="_blank" rel="noopener noreferrer" {...props} />,
-                            }}
-                          >
-                            {part.text}
-                          </ReactMarkdown>
-                        ))
+                        textParts.map((part: any, index: number) => {
+                          return (
+                            <ReactMarkdown 
+                              key={`text-${index}`}
+                              remarkPlugins={[remarkGfm]}
+                              components={{
+                                p: ({node, ...props}) => <p className="mb-4 last:mb-0 leading-relaxed" {...props} />,
+                                ul: ({node, ...props}) => <ul className="mb-4 list-disc pl-6 space-y-1" {...props} />,
+                                ol: ({node, ...props}) => <ol className="mb-4 list-decimal pl-6 space-y-1" {...props} />,
+                                li: ({node, ...props}) => <li className="leading-relaxed" {...props} />,
+                                strong: ({node, ...props}) => <strong className="font-semibold text-neutral-950" {...props} />,
+                                a: ({node, ...props}) => <a className="text-blue-600 hover:underline font-medium" target="_blank" rel="noopener noreferrer" {...props} />,
+                              }}
+                            >
+                              {part.text}
+                            </ReactMarkdown>
+                          )
+                        })
                       ) : fallbackText ? (
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
                           {fallbackText}
@@ -174,14 +172,11 @@ export default function Home() {
 
                       {/* RENDER TOOLS */}
                       {uniqueTools.map((tool: any, index: number) => {
-                        // Extract toolName even if it's baked into the type string
                         const toolName = tool.toolName || (tool.type === 'tool-showProjectCard' ? 'showProjectCard' : null);
 
                         if (toolName === "showProjectCard") {
-                          // Extract data from the input, output, args, OR result (depending on SDK quirks)
                           const project = tool.input || tool.output || tool.args || tool.result;
 
-                          // Loading state
                           if (!project || Object.keys(project).length === 0) {
                             return (
                               <div key={`loading-${index}`} className="my-4 animate-pulse rounded-2xl border border-neutral-200 bg-neutral-50 p-5 h-32 flex items-center justify-center">
@@ -232,14 +227,6 @@ export default function Home() {
                         return null;
                       })}
 
-                      {/* DEBUG FALLBACK */}
-                      {isCompletelyBlank && msg.role === 'assistant' && !isLoading && (
-                        <div className="bg-red-50 border border-red-200 p-4 rounded-xl text-xs overflow-auto font-mono text-red-600">
-                          <strong>Debug Data (UI Render Failed):</strong>
-                          <pre className="mt-2">{JSON.stringify(anyMsg, null, 2)}</pre>
-                        </div>
-                      )}
-
                     </div>
                   </motion.div>
                 );
@@ -270,6 +257,7 @@ export default function Home() {
             : "fixed bottom-6 left-1/2 -translate-x-1/2 px-4" 
         )}>
           
+          {/* HORIZONTAL PILLS FOR ACTIVE CHAT STATE */}
           {messages.length > 0 && (
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
@@ -313,6 +301,33 @@ export default function Home() {
               <ArrowRight className="h-4 w-4" />
             </button>
           </form>
+
+          {/* BIG SQUARE BUTTONS FOR INITIAL LANDING STATE (RESTORED!) */}
+          {messages.length === 0 && (
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="mt-8 flex flex-wrap justify-center gap-2 w-full"
+            >
+              {QUICK_ACTIONS.map((action) => {
+                const Icon = action.icon;
+                return (
+                  <button
+                    key={action.id}
+                    onClick={() => handleActionClick(action.prompt)}
+                    className="group flex flex-col items-center justify-center rounded-2xl border border-neutral-100 bg-white px-4 py-3 shadow-[0_2px_8px_rgba(0,0,0,0.03)] transition-all duration-200 hover:-translate-y-0.5 hover:border-neutral-200 hover:shadow-md"
+                  >
+                    <Icon className="h-4 w-4 text-neutral-500 transition-colors group-hover:text-blue-600" />
+                    <span className="mt-1.5 text-xs font-medium text-neutral-600 group-hover:text-neutral-900">
+                      {action.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </motion.div>
+          )}
+
         </div>
       </div>
     </main>
