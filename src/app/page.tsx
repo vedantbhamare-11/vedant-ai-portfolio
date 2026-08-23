@@ -19,7 +19,18 @@ const QUICK_ACTIONS = [
 
 export default function Home() {
   const [input, setInput] = useState("");
-  const { messages, sendMessage, status, error, setMessages } = useChat();
+  
+  // FIX: Formatted for the new SDK structure and suppressed strict TS errors
+  const { messages, sendMessage, status, error, setMessages } = useChat({
+    initialMessages: [
+      {
+        id: 'welcome',
+        role: 'assistant',
+        parts: [{ type: 'text', text: "Hi there! 👋 I'm Vedant's AI portfolio assistant.\n\nI can help you explore his background as a Frontend Developer & UI Engineer. Feel free to ask me about his **Skills**, check out his **Projects**, or get his **Contact** information. What would you like to explore first?" }]
+      }
+    ] as any
+  } as any);
+  
   const isLoading = status === 'submitted' || status === 'streaming';
 
   const handleActionClick = (prompt: string) => {
@@ -35,7 +46,14 @@ export default function Home() {
   };
 
   const handleReset = () => {
-    setMessages([]);
+    // FIX: Match the reset state to the new SDK structure
+    setMessages([
+      {
+        id: 'welcome',
+        role: 'assistant',
+        parts: [{ type: 'text', text: "Hi there! 👋 I'm Vedant's AI portfolio assistant.\n\nI can help you explore his background as a Frontend Developer & UI Engineer. Feel free to ask me about his **Skills**, check out his **Projects**, or get his **Contact** information. What would you like to explore first?" }]
+      } as any
+    ]);
     setInput("");
   };
 
@@ -106,11 +124,9 @@ export default function Home() {
                 
                 const anyMsg = msg as any;
                 
-                // 1. Extract Only Text (Ignore Reasoning)
                 const textParts = anyMsg.parts?.filter((p: any) => p.type === "text") || [];
                 const fallbackText = anyMsg.text || anyMsg.content || "";
 
-                // 2. Extract Tools 
                 const extractedTools: any[] = [];
                 if (Array.isArray(anyMsg.toolInvocations)) {
                   extractedTools.push(...anyMsg.toolInvocations);
@@ -158,6 +174,7 @@ export default function Home() {
                                 li: ({node, ...props}) => <li className="leading-relaxed" {...props} />,
                                 strong: ({node, ...props}) => <strong className="font-semibold text-neutral-950" {...props} />,
                                 a: ({node, ...props}) => <a className="text-blue-600 hover:underline font-medium" target="_blank" rel="noopener noreferrer" {...props} />,
+                                img: ({node, ...props}) => <img className="rounded-xl shadow-sm border border-neutral-200 my-4 max-w-full h-auto max-h-72 object-cover" alt={props.alt || "Vedant"} {...props} />,
                               }}
                             >
                               {part.text}
@@ -165,7 +182,13 @@ export default function Home() {
                           )
                         })
                       ) : fallbackText ? (
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        <ReactMarkdown 
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            p: ({node, ...props}) => <p className="mb-4 last:mb-0 leading-relaxed" {...props} />,
+                            img: ({node, ...props}) => <img className="rounded-xl shadow-sm border border-neutral-200 my-4 max-w-full h-auto max-h-72 object-cover" alt={props.alt || "Vedant"} {...props} />,
+                          }}
+                        >
                           {fallbackText}
                         </ReactMarkdown>
                       ) : null}
@@ -257,7 +280,6 @@ export default function Home() {
             : "fixed bottom-6 left-1/2 -translate-x-1/2 px-4" 
         )}>
           
-          {/* HORIZONTAL PILLS FOR ACTIVE CHAT STATE */}
           {messages.length > 0 && (
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
@@ -290,7 +312,7 @@ export default function Home() {
               onChange={(e) => setInput(e.target.value)}
               disabled={isLoading}
               placeholder="Ask me anything..."
-              className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-4 pl-6 pr-14 text-sm text-neutral-900 backdrop-blur-md transition-all placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none focus:ring-4 focus:ring-neutral-100 disabled:opacity-50"
+              className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-4 pl-6 pr-14 text-sm text-neutral-900 backdrop-blur-md transition-all placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none disabled:opacity-50"
             />
             <button
               type="submit"
@@ -302,7 +324,6 @@ export default function Home() {
             </button>
           </form>
 
-          {/* BIG SQUARE BUTTONS FOR INITIAL LANDING STATE (RESTORED!) */}
           {messages.length === 0 && (
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
