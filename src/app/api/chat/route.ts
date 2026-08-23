@@ -1,65 +1,249 @@
-// src/app/api/chat/route.ts
-import { z } from 'zod';
-import { groq } from '@ai-sdk/groq';
-import { 
-  streamText, 
-  convertToModelMessages, 
-  createUIMessageStreamResponse, 
-  toUIMessageStream, 
-  tool 
-} from 'ai';
-import { getKnowledgeBase } from '@/lib/knowledge';
+import { groq } from "@ai-sdk/groq";
+import { streamText } from "ai";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { systemPrompt } from "@/lib/chat-config";
 
-export const maxDuration = 30;
+// -----------------------------------------------------
+// Initialize Gemini
+// -----------------------------------------------------
+
+const genAI = new GoogleGenerativeAI(
+  process.env.GEMINI_API_KEY!
+);
+
+// -----------------------------------------------------
+// Initialize Pinecone
+// -----------------------------------------------------
+
+const pc = new Pinecone({
+  apiKey: process.env.PINECONE_API_KEY!,
+});
+
+const index = pc.index("portfolio-index");
+
+// -----------------------------------------------------
+// POST /api/chat
+// -----------------------------------------------------
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  try {
+    const { messages } = await req.json();
 
-  const knowledgeDocs = getKnowledgeBase();
-  const contextString = knowledgeDocs
-    .map((doc) => `--- ${doc.title} ---\n${doc.content}`)
-    .join("\n\n");
+    // -------------------------------------------------
+    // Normalize incoming AI SDK messages
+    // -------------------------------------------------
 
-  const systemPrompt = `You are the AI portfolio persona of Vedant Bhamare, an SDE-2 and Frontend Developer & UI Engineer based in Bangalore.
+    const cleanMessages = messages
+      .map((m: any) => {
+        let textContent = "";
 
-IMPORTANT RULES:
-1. FIRST PERSON: Always speak in the first person ("I", "me", "my"). You are Vedant interacting directly with recruiters and peers.
-2. CONTEXT BOUND: Base your answers strictly on the provided knowledge base context.
-3. PROFILE PICTURE: If asked "Tell me about yourself" or for an introduction, include this exact markdown image at the top:
-   ![Vedant Bhamare](https://raw.githubusercontent.com/vedantbhamare-11/Portfolio-nextjs/main/public/personal/profile-pic.jpeg)
-4. GENERAL PROJECT INQUIRIES: If the user asks generally about your projects or what you have built, provide a structured text list of your top projects with 1-2 sentence summaries. DO NOT trigger the 'showProjectCard' tool for general lists. Encourage them to ask about a specific one.
-5. SPECIFIC PROJECT DEEP DIVE: When the user asks about a specific project (e.g. "Tell me about WordSense", "How does the Curriculum Engine work?", "CurryCue"), explain your technical architecture, design patterns, and challenges in detail, AND CALL the 'showProjectCard' tool at the end to render the interactive project card.
-6. OUT OF SCOPE: If a query is unrelated to your background or projects, politely redirect the conversation back to your engineering experience.
+        if (typeof m.content === "string") {
+          textContent = m.content;
+        } else if (Array.isArray(m.parts)) {
+          textContent = m.parts
+            .filter((p: any) => p.type === "text")
+            .map((p: any) => p.text)
+            .join(" ");
+        } else if (
+          typeof m.content === "object" &&
+          m.content !== null
+        ) {
+          textContent = m.content.text || "";
+        }
 
-CONTEXT ABOUT VEDANT:
-${contextString}`;
+        return {
+          role:
+            m.role === "assistant"
+              ? "assistant"
+              : "user",
+          content: textContent,
+        };
+      })
+      .filter((m: any) => m.content.trim().length > 0);
 
-const recentMessages = messages.slice(-3);
-  const modelMessages = await convertToModelMessages(recentMessages);
-  const result = streamText({
-    model: groq('openai/gpt-oss-20b'), 
-    system: systemPrompt,
-    messages: modelMessages,
-    tools: {
-      showProjectCard: tool({
-        description: 'Display an interactive visual project card. Call this tool ONLY when providing a detailed breakdown of a specific project.',
-        inputSchema: z.object({
-          title: z.string().describe('The name of the project'),
-          description: z.string().describe('A 1-2 sentence description of the project'),
-          technologies: z.array(z.string()).describe('An array of technologies used (e.g. React, Next.js)'),
-          link: z.string().url().optional().describe('The github or live URL if available'),
-        }),
-        execute: async (args) => {
-          return args; 
-        },
+    // -------------------------------------------------
+    // Get latest USER message
+    // -------------------------------------------------
+
+    const latestUserMessage =
+      [...cleanMessages]
+        .reverse()
+        .find(
+          (message: {
+            role: string;
+            content: string;
+          }) => message.role === "user"
+        )?.content ||
+      "Tell me about Vedant's projects.";
+
+    console.log(
+      "========================================"
+    );
+
+    console.log(
+      "USER QUERY:",
+      latestUserMessage
+    );
+
+    // -------------------------------------------------
+    // Generate Gemini embedding
+    // -------------------------------------------------
+
+    const embeddingModel =
+      genAI.getGenerativeModel({
+        model: "gemini-embedding-001",
+      });
+
+    const embeddingResult =
+      await embeddingModel.embedContent(
+        latestUserMessage
+      );
+
+    const queryVector =
+      embeddingResult.embedding.values.slice(0, 768);
+
+    console.log(
+      "Embedding generated:",
+      queryVector.length
+    );
+
+    // -------------------------------------------------
+    // Search Pinecone
+    // -------------------------------------------------
+
+    const searchResults = await index.query({
+      vector: queryVector,
+      topK: 3,
+      includeMetadata: true,
+    });
+
+    console.log(
+      "Pinecone matches:",
+      searchResults.matches.length
+    );
+
+    // -------------------------------------------------
+    // Extract retrieved project context
+    // -------------------------------------------------
+
+    const retrievedContext =
+      searchResults.matches
+        .map((match: any) => {
+          return match.metadata?.text;
+        })
+        .filter(
+          (text: unknown): text is string =>
+            typeof text === "string" &&
+            text.trim().length > 0
+        )
+        .join("\n\n---\n\n");
+
+    console.log(
+      "Retrieved context preview:",
+      retrievedContext.substring(0, 1000)
+    );
+
+    // -------------------------------------------------
+    // Build RAG system prompt
+    // -------------------------------------------------
+
+    const ragSystemPrompt = `
+${systemPrompt}
+
+You have access to the following information retrieved
+from Vedant's portfolio knowledge base.
+
+<retrieved_context>
+${retrievedContext || "No relevant project context was found."}
+</retrieved_context>
+
+IMPORTANT INSTRUCTIONS:
+
+1. Use the retrieved context when answering questions
+   about Vedant's projects, experience, skills, or
+   technical architecture.
+
+2. Do not invent technical details that are not present
+   in the retrieved context or the system instructions.
+
+3. If the user asks about a specific project, provide
+   a detailed technical explanation when the retrieved
+   context contains enough information.
+
+4. Structure technical answers clearly using:
+   - Overview
+   - Architecture
+   - Technologies
+   - How it works
+   - Key technical decisions
+   - Challenges / results
+   when applicable.
+
+5. If the retrieved context does not contain enough
+   information to answer a specific question, be honest
+   about what is available instead of making up details.
+
+6. You are Vedant's portfolio assistant, so always
+   answer in the context of Vedant's work.
+
+7. Keep normal answers concise, but when the user asks
+   "explain in detail", provide a thorough technical
+   explanation.
+`;
+
+    // -------------------------------------------------
+    // Generate response with Groq
+    // -------------------------------------------------
+
+    console.log(
+      "Sending request to Groq..."
+    );
+
+    const result = await streamText({
+      model: groq("openai/gpt-oss-20b"),
+      system: ragSystemPrompt,
+      messages: cleanMessages,
+      temperature: 0.3,
+    });
+
+    console.log(
+      "Groq streaming started."
+    );
+
+    // -------------------------------------------------
+    // Return AI SDK UI message stream
+    // -------------------------------------------------
+
+    return result.toUIMessageStreamResponse();
+
+  } catch (error) {
+    console.error(
+      "========================================"
+    );
+
+    console.error(
+      "Chat API Error:",
+      error
+    );
+
+    console.error(
+      "========================================"
+    );
+
+    return new Response(
+      JSON.stringify({
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to process chat request",
       }),
-    },
-  });
-
-  return createUIMessageStreamResponse({
-    stream: toUIMessageStream({
-      stream: result.stream,
-      originalMessages: messages,
-    }),
-  });
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
 }

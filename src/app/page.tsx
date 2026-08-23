@@ -5,17 +5,21 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Bot, Loader2, Plus } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
 import { cn } from "@/lib/utils";
 import { QUICK_ACTIONS, PRELOADED_RESPONSES } from "@/lib/chat-config";
 import ChatMessage from "@/components/chat/ChatMessage";
 
 export default function Home() {
   const [input, setInput] = useState("");
-  
+
   // RESTORED: Start with an empty chat so the landing UI shows!
-  const { messages, sendMessage, status, error, setMessages } = useChat();
-  
-  const isLoading = status === 'submitted' || status === 'streaming';
+  const { messages, sendMessage, status, error, setMessages } = useChat({
+    transport: new DefaultChatTransport({
+      api: "/api/chat",
+    }),
+  });
+  const isLoading = status === "submitted" || status === "streaming";
 
   const handleActionClick = (actionId: string, prompt: string) => {
     if (isLoading) return;
@@ -26,13 +30,13 @@ export default function Home() {
       const userMessage = {
         id: `user-${Date.now()}`,
         role: "user",
-        parts: [{ type: "text", text: prompt }]
+        parts: [{ type: "text", text: prompt }],
       };
 
       const assistantMessage = {
         id: `assistant-${Date.now() + 1}`,
         role: "assistant",
-        parts: [{ type: "text", text: preloadedText }]
+        parts: [{ type: "text", text: preloadedText }],
       };
 
       setMessages((prev: any) => [...prev, userMessage, assistantMessage]);
@@ -44,9 +48,9 @@ export default function Home() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
-    
+
     sendMessage({ text: input });
-    setInput(""); 
+    setInput("");
   };
 
   const handleReset = () => {
@@ -57,7 +61,6 @@ export default function Home() {
 
   return (
     <main className="relative flex min-h-screen flex-col items-center selection:bg-neutral-200">
-      
       {/* BACKGROUND TEXT */}
       <div className="pointer-events-none fixed inset-0 flex items-center justify-center overflow-hidden opacity-[0.03] select-none">
         <span className="text-[18vw] font-black tracking-tighter">VEDANT</span>
@@ -76,7 +79,9 @@ export default function Home() {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-900 text-white shadow-sm">
                 <span className="text-xs font-bold tracking-wider">VB</span>
               </div>
-              <span className="text-sm font-semibold text-neutral-800 hidden sm:block">Vedant AI</span>
+              <span className="text-sm font-semibold text-neutral-800 hidden sm:block">
+                Vedant AI
+              </span>
             </div>
             <button
               onClick={handleReset}
@@ -90,20 +95,24 @@ export default function Home() {
       </AnimatePresence>
 
       {/* CHAT CONTAINER */}
-      <div className={cn(
-        "flex w-full max-w-3xl flex-col px-4 relative z-10",
-        messages.length === 0 ? "flex-1 justify-center items-center" : "pt-24 pb-48" 
-      )}>
-        
+      <div
+        className={cn(
+          "flex w-full max-w-3xl flex-col px-4 relative z-10",
+          messages.length === 0
+            ? "flex-1 justify-center items-center"
+            : "pt-24 pb-48",
+        )}
+      >
         {error && (
           <div className="absolute top-24 left-1/2 -translate-x-1/2 w-full max-w-md rounded-xl bg-red-50 border border-red-200 p-4 text-sm text-red-600 shadow-sm z-50 text-center">
-            <strong>API Error:</strong> {error.message || "Failed to connect to the AI model."}
+            <strong>API Error:</strong>{" "}
+            {error.message || "Failed to connect to the AI model."}
           </div>
         )}
 
         {/* RESTORED: THE HERO LANDING SECTION */}
         {messages.length === 0 && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4 }}
@@ -112,7 +121,9 @@ export default function Home() {
             <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-900 text-white shadow-sm">
               <span className="text-sm font-bold tracking-wider">VB</span>
             </div>
-            <p className="text-sm font-medium text-neutral-500">Hey, I'm Vedant 👋</p>
+            <p className="text-sm font-medium text-neutral-500">
+              Hey, I'm Vedant 👋
+            </p>
             <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl">
               AI & Frontend Engineer
             </h1>
@@ -124,7 +135,7 @@ export default function Home() {
             {messages.map((msg) => (
               <ChatMessage key={msg.id} msg={msg} />
             ))}
-            
+
             {isLoading && messages[messages.length - 1]?.role === "user" && (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -141,16 +152,19 @@ export default function Home() {
             )}
           </AnimatePresence>
         </div>
-        
+
         {/* INPUT AREA & QUICK ACTIONS */}
-        <div className={cn(
-          "w-full max-w-2xl z-50 flex flex-col transition-all duration-500 ease-in-out",
-          messages.length === 0 ? "mt-8" : "fixed bottom-6 left-1/2 -translate-x-1/2 px-4" 
-        )}>
-          
+        <div
+          className={cn(
+            "w-full max-w-2xl z-50 flex flex-col transition-all duration-500 ease-in-out",
+            messages.length === 0
+              ? "mt-8"
+              : "fixed bottom-6 left-1/2 -translate-x-1/2 px-4",
+          )}
+        >
           {/* HORIZONTAL PILLS FOR ACTIVE CHAT */}
           {messages.length > 0 && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="flex w-full overflow-x-auto gap-2 mb-3 pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
@@ -171,7 +185,10 @@ export default function Home() {
             </motion.div>
           )}
 
-          <form onSubmit={handleSubmit} className="relative flex w-full items-center shadow-lg rounded-full">
+          <form
+            onSubmit={handleSubmit}
+            className="relative flex w-full items-center shadow-lg rounded-full"
+          >
             <input
               type="text"
               value={input}
@@ -192,7 +209,7 @@ export default function Home() {
 
           {/* RESTORED: THE BIG SQUARE BUTTONS FOR LANDING */}
           {messages.length === 0 && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.2 }}
@@ -215,7 +232,6 @@ export default function Home() {
               })}
             </motion.div>
           )}
-
         </div>
       </div>
     </main>

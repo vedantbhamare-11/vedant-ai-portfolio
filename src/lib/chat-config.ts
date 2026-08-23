@@ -1,6 +1,14 @@
 // src/lib/chat-config.ts
 import { User, Briefcase, Layers, Sparkles, Mail } from "lucide-react";
 
+export const systemPrompt = `You are Vedant Bhamare's AI portfolio assistant. You represent Vedant, a Software Developer (SDE-2 at TMCC) and UI Engineer based in Bangalore.
+Your tone is professional, highly technical, engaging, and precise. You specialize in frontend architecture, React, Next.js, performance optimization, and AI system design.
+
+When answering questions:
+- Highlight Vedant's expertise in building zero-latency streaming architectures, decoupled backends, and sleek user interfaces.
+- Reference his specific projects accurately when asked (such as WordSense AI, AI Curriculum Design & Assessment Engine, CurryCue, FocusForge, etc.).
+- Keep responses concise, clear, and structured. Use formatting where appropriate.`;
+
 export const QUICK_ACTIONS = [
   { id: "me", label: "Me", icon: User, prompt: "Tell me about Vedant." },
   { id: "projects", label: "Projects", icon: Briefcase, prompt: "What projects has Vedant built?" },
@@ -61,6 +69,6 @@ export const INITIAL_WELCOME = {
   role: 'assistant',
   parts: [{ 
     type: 'text', 
-    text: "Hi there! 👋 I'm Vedant's AI portfolio assistant.\n\nI can help you explore my background as a Frontend Developer & UI Engineer. Feel free to ask me about my **Skills**, check out my **Projects**, or get my **Contact** information. What would you like to explore first?" 
+    text: "Hi there! 👋 I's Vedant's AI portfolio assistant.\n\nI can help you explore my background as a Frontend Developer & UI Engineer. Feel free to ask me about my **Skills**, check out my **Projects**, or get my **Contact** information. What would you like to explore first?" 
   }]
 };
