@@ -47,12 +47,41 @@ async function embedAndStore() {
         ],
       });
 
+      
+
       console.log(`✅ Successfully stored ${projectId} in Pinecone.`);
     } catch (error) {
       console.error(`❌ Failed to process ${projectId}:`, error);
     }
   }
 
+  const experiencePath = path.join(process.cwd(), "knowledge/persona/experience.md");
+  if (fs.existsSync(experiencePath)) {
+    console.log("Generating embedding for professional experience...");
+    try {
+      const content = fs.readFileSync(experiencePath, "utf-8");
+      const model = genAI.getGenerativeModel({ model: "gemini-embedding-001" });
+      const result = await model.embedContent(content);
+      const embedding = result.embedding.values.slice(0, 768);
+
+      await index.upsert({
+        records: [
+          {
+            id: "experience",
+            values: embedding,
+            metadata: {
+              source: "experience",
+              text: content,
+            },
+          },
+        ],
+      });
+
+      console.log("✅ Successfully stored professional experience in Pinecone.");
+    } catch (error) {
+      console.error("❌ Failed to process professional experience:", error);
+    }
+  }
   console.log(
     "🎉 All projects successfully embedded and stored in the Vector Database!",
   );

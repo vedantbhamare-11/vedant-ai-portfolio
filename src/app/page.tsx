@@ -22,28 +22,46 @@ export default function Home() {
   const isLoading = status === "submitted" || status === "streaming";
 
   const handleActionClick = (actionId: string, prompt: string) => {
-    if (isLoading) return;
+  if (isLoading) return;
 
-    const preloadedText = PRELOADED_RESPONSES[actionId];
+  const preloadedText = PRELOADED_RESPONSES[actionId];
 
-    if (preloadedText) {
-      const userMessage = {
-        id: `user-${Date.now()}`,
-        role: "user",
-        parts: [{ type: "text", text: prompt }],
-      };
+  if (preloadedText) {
+    const timestamp = Date.now();
 
-      const assistantMessage = {
-        id: `assistant-${Date.now() + 1}`,
-        role: "assistant",
-        parts: [{ type: "text", text: preloadedText }],
-      };
+    const userMessage = {
+      id: `user-${actionId}-${timestamp}`,
+      role: "user",
+      parts: [
+        {
+          type: "text",
+          text: prompt,
+        },
+      ],
+    };
 
-      setMessages((prev: any) => [...prev, userMessage, assistantMessage]);
-    } else {
-      sendMessage({ text: prompt });
-    }
-  };
+    const assistantMessage = {
+      id: `preloaded-${actionId}-${timestamp}`,
+      role: "assistant",
+      parts: [
+        {
+          type: "text",
+          text: preloadedText,
+        },
+      ],
+    };
+
+    setMessages((prev: any) => [
+      ...prev,
+      userMessage,
+      assistantMessage,
+    ]);
+
+    return;
+  }
+
+  sendMessage({ text: prompt });
+};
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

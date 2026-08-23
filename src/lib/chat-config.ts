@@ -1,74 +1,125 @@
-// src/lib/chat-config.ts
-import { User, Briefcase, Layers, Sparkles, Mail } from "lucide-react";
+import {
+  User,
+  Briefcase,
+  Layers,
+  Sparkles,
+  Mail,
+} from "lucide-react";
 
-export const systemPrompt = `You are Vedant Bhamare's AI portfolio assistant. You represent Vedant, a Software Developer (SDE-2 at TMCC) and UI Engineer based in Bangalore.
-Your tone is professional, highly technical, engaging, and precise. You specialize in frontend architecture, React, Next.js, performance optimization, and AI system design.
+export const systemPrompt = `You are Vedant Bhamare's AI portfolio assistant. You represent Vedant, a Software Developer (SDE-2 at TMCC) and UI Engineer.
+
+Your tone is professional, highly technical, engaging, and precise.
 
 When answering questions:
-- Highlight Vedant's expertise in building zero-latency streaming architectures, decoupled backends, and sleek user interfaces.
-- Reference his specific projects accurately when asked (such as WordSense AI, AI Curriculum Design & Assessment Engine, CurryCue, FocusForge, etc.).
-- Keep responses concise, clear, and structured. Use formatting where appropriate.`;
+- Highlight Vedant's expertise in frontend architecture, React, Next.js, performance optimization, AI systems, and RAG.
+- Reference his specific projects accurately.
+- Do not invent information.
+- Keep responses concise unless the user asks for a detailed explanation.
+`;
 
 export const QUICK_ACTIONS = [
-  { id: "me", label: "Me", icon: User, prompt: "Tell me about Vedant." },
-  { id: "projects", label: "Projects", icon: Briefcase, prompt: "What projects has Vedant built?" },
-  { id: "skills", label: "Skills", icon: Layers, prompt: "What are Vedant's technical skills?" },
-  { id: "fun", label: "Fun", icon: Sparkles, prompt: "Tell me something interesting about Vedant." },
-  { id: "contact", label: "Contact", icon: Mail, prompt: "How can I contact Vedant?" },
+  {
+    id: "me",
+    label: "Me",
+    icon: User,
+    prompt: "Tell me about Vedant.",
+  },
+  {
+    id: "projects",
+    label: "Projects",
+    icon: Briefcase,
+    prompt: "What projects has Vedant built?",
+  },
+  {
+    id: "experience",
+    label: "Experience",
+    icon: Briefcase,
+    prompt: "Tell me about Vedant's professional experience.",
+  },
+  {
+    id: "skills",
+    label: "Skills",
+    icon: Layers,
+    prompt: "What are Vedant's technical skills?",
+  },
+  {
+    id: "fun",
+    label: "Fun",
+    icon: Sparkles,
+    prompt: "Tell me something interesting about Vedant.",
+  },
+  {
+    id: "contact",
+    label: "Contact",
+    icon: Mail,
+    prompt: "How can I contact Vedant?",
+  },
 ];
 
 export const PRELOADED_RESPONSES: Record<string, string> = {
   me: `![Vedant Bhamare](https://raw.githubusercontent.com/vedantbhamare-11/Portfolio-nextjs/main/public/personal/profile-pic.jpeg)
 
-Hey, I'm **Vedant Bhamare** — a Software Developer (SDE-2 at TMCC) and UI Engineer based in Bangalore.
+Hey, I'm **Vedant Bhamare** — a Software Developer and UI Engineer.
 
-I specialize in building sleek, high-performance interfaces and scalable, decoupled back-ends. My core stack revolves around **TypeScript, React, Next.js, and React Native** on the frontend, alongside **Node.js and Python** powering backend services and AI systems.
+I specialize in building **high-performance interfaces, AI-powered applications, and scalable backend systems** using technologies like React, Next.js, TypeScript, React Native, Node.js, and Python.`,
 
-I'm focused on zero-latency streaming architectures, robust system design, and building intuitive developer & consumer tools. Feel free to explore my projects or ask me anything about my technical background!`,
+  projects: `I've built projects across **AI, frontend engineering, real-time systems, and productivity**.
 
-  projects: `Here are some of the flagship projects I've built, ranked by architectural complexity:
+### Featured Projects
 
-1. **AI Curriculum Design & Assessment Engine** — An asynchronous, event-driven assessment creator for educators built with Next.js 15, Express, BullMQ, Redis, and Gemini 2.5 Flash.
-2. **WordSense AI** — A zero-latency Chrome Extension streaming domain-tuned definitions at 500+ tokens/sec using Groq LPUs, Meta Llama 3.1, and an isolated Manifest V3 Background Worker.
-3. **CurryCue** — A multimodal AI kitchen assistant built with Next.js, Zustand, Drizzle ORM, Claude Bedrock, Azure GPT-4o Vision, and ElevenLabs voice.
-4. **FocusForge** — An all-in-one productivity suite with a Pomodoro timer, habit streaks, ambient audio, and gamified productivity tracking.
-5. **SWINS** — A real-time peer appreciation mobile platform engineered with React Native, Redux, Node.js, and WebSockets.
-6. **Interconnect** — An internal LinkedIn-style research and intelligence sharing network with feed virtualization and debounced search.
-7. **Rider Tracker App** — A background location telemetry and battery monitoring React Native app utilizing Expo TaskManager and Flask.
-8. **Trip Planner** — A personalized travel itinerary generator with drag-and-drop scheduling using Next.js and Geoapify Places API.
-9. **Road Asset & Defect Detection ML** — Computer vision models built with TensorFlow and OpenCV adhering to NHAI road safety inspection standards.
-10. **SPI Game** — A browser-based multiplayer biological life simulation with a custom game engine built in vanilla JavaScript.
+**AI Curriculum Design & Assessment Engine**  
+An asynchronous AI assessment platform built with **Next.js, Express, BullMQ, Redis, and Gemini 2.5 Flash**.
 
-👉 *Ask me about any specific project (e.g., **"Tell me more about WordSense AI"** or **"How does the Curriculum Engine work?"**) to see a detailed technical breakdown and live project card!*`,
+**WordSense AI**  
+A context-aware Chrome Extension that streams AI-powered definitions at **500+ tokens/sec**, using Groq, Llama, and a Manifest V3 background worker.
 
-  skills: `Here is a breakdown of my core technical stack:
+**CurryCue**  
+A multimodal AI kitchen assistant using **Next.js, Zustand, Drizzle ORM, Claude, GPT-4o Vision, and ElevenLabs**.
 
-* **Languages:** TypeScript, JavaScript (ES6+), Python, SQL, HTML5/CSS3, Java
-* **Frontend:** React, Next.js (App Router), React Native (Expo), Tailwind CSS, ShadCN UI, Material UI, Redux, Zustand
-* **Backend:** Node.js, Express.js, Flask, RESTful APIs, WebSockets
-* **AI / ML:** LLM Orchestration, RAG Systems, Groq LPUs, Meta Llama 3.1, Gemini API, Claude Bedrock, Azure GPT-4o, TensorFlow, OpenCV
-* **Databases & Queues:** MongoDB (Atlas), PostgreSQL, Redis, BullMQ (Async Job Workers)
-* **DevOps & Tools:** Git, Docker, Vercel, Hugging Face Spaces, Render, Chrome Extensions (Manifest V3)`,
+**FocusForge**  
+A productivity platform combining **Pomodoro sessions, habit tracking, tasks, calendar functionality, and ambient audio**.
 
-  contact: `I am currently open to exciting new opportunities as a Frontend Developer / UI Engineer in Bangalore or remote!
+I've also built **SWINS, Interconnect, Rider Tracker, Trip Planner, Road Asset & Defect Detection, and SPI Game**.
 
-* 📧 **Email:** [vedantdbhamare@gmail.com](mailto:vedantdbhamare@gmail.com)
-* 💼 **LinkedIn:** [linkedin.com/in/vedantbhamare11](https://www.linkedin.com/in/vedantbhamare11/)
-* 🐙 **GitHub:** [github.com/vedantbhamare-11](https://github.com/vedantbhamare-11)
+Ask me about any project for a deeper technical breakdown.`,
 
-Feel free to reach out directly via email or connect on LinkedIn!`,
+  experience: `I've worked across **software development, AI/ML engineering, system architecture, and technical mentorship**.
 
-  fun: `A few fun facts about me:
-* ⚡ **Speed Obsession:** I engineered WordSense AI to stream at over 500 tokens/sec because waiting on AI loading spinners drove me crazy!
-* 🎮 **Built from Scratch:** Rather than using a pre-built game engine, I wrote the entire logic for my multiplayer strategy game (*SPI*) from scratch in pure vanilla JavaScript.
-* 😄 **Dad Jokes & Coding:** I believe technical documentation shouldn't be boring — I love writing approachable blogs on Medium with plenty of humor and metaphors.`
-};
+### Professional Experience
 
-export const INITIAL_WELCOME = {
-  id: 'welcome',
-  role: 'assistant',
-  parts: [{ 
-    type: 'text', 
-    text: "Hi there! 👋 I's Vedant's AI portfolio assistant.\n\nI can help you explore my background as a Frontend Developer & UI Engineer. Feel free to ask me about my **Skills**, check out my **Projects**, or get my **Contact** information. What would you like to explore first?" 
-  }]
+**TMCC — Developer & AI/ML Engineer**  
+*Sept 2024 – Present*  
+Working with **React Native, Next.js, RAG systems, and LLMs** on production applications.
+
+**WOFO — Freelance Developer & Mentor**  
+*Feb 2024 – May 2024*  
+Designed system architectures, developed frontend applications with **Next.js and TypeScript**, and mentored React/Next.js developers.
+
+**Procedure — Product Development Bootcamp**  
+*Aug 2023 – Sept 2023*  
+Built production-ready applications using **React, TypeScript, HTML, and CSS**.
+
+**IBC Cube — Machine Learning Intern**  
+*June 2023 – Aug 2023*  
+Worked on **computer vision and road infrastructure defect detection** using Python, TensorFlow, and OpenCV.`,
+
+  skills: `My technical skills are focused around **frontend engineering, AI systems, and scalable application development**.
+
+- **Languages:** TypeScript, JavaScript, Python, SQL, Java
+- **Frontend:** React, Next.js, React Native, Tailwind CSS, ShadCN, Redux, Zustand
+- **Backend:** Node.js, Express.js, Flask, REST APIs, WebSockets
+- **AI / ML:** LLMs, RAG, Groq, Llama, Gemini, Claude, GPT-4o, TensorFlow, OpenCV
+- **Infrastructure:** PostgreSQL, MongoDB, Redis, BullMQ, Docker, Vercel
+
+My strongest areas are **React/Next.js, UI engineering, AI integrations, RAG architectures, and performance optimization**.`,
+
+  contact: `I'd be happy to connect! I'm currently open to opportunities in **Frontend Engineering, UI Engineering, and AI-powered application development**.
+
+Whether it's an opportunity, collaboration, or just a technical discussion, feel free to reach out or connect with me online.`,
+
+  fun: `A few things that reflect how I approach engineering:
+
+- ⚡ **Performance:** WordSense AI was designed to stream AI responses at **500+ tokens/sec**.
+- 🎮 **From scratch:** I built the logic for my multiplayer **SPI game** using vanilla JavaScript.
+- 🤖 **AI:** A lot of my recent work explores **LLMs, RAG, streaming, and multimodal AI systems**.`,
 };
