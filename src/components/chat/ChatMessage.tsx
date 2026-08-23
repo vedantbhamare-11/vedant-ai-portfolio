@@ -7,6 +7,7 @@ import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
 import { useEffect, useMemo, useState } from "react";
 import SocialLinks from "./SocialLinks";
+import Photography from "./Photography";
 interface ChatMessageProps {
   msg: any;
 }
@@ -280,11 +281,21 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
           />
         )}
 
-        {msg.role === "assistant" &&
-  msg.id?.startsWith("preloaded-contact") && (
-    <SocialLinks />
-  )}
+       {/* =========================
+            CUSTOM COMPONENTS
+        ========================== */}
 
+        {/* Contact Quick Action -> Render Social Links */}
+        {msg.role === "assistant" &&
+          msg.id?.startsWith("preloaded-contact") && (
+            <SocialLinks />
+          )}
+
+        {/* Fun Quick Action -> Render Photography Grid */}
+        {msg.role === "assistant" &&
+          msg.id?.startsWith("preloaded-fun") && (
+            <Photography />
+          )}
         {/* =========================
             TOOL RENDERER
         ========================== */}
