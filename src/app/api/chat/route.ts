@@ -1,14 +1,14 @@
 // src/app/api/chat/route.ts
-import { z } from "zod";
-import { groq } from "@ai-sdk/groq";
-import {
-  streamText,
-  convertToModelMessages,
-  createUIMessageStreamResponse,
-  toUIMessageStream,
-  tool,
-} from "ai";
-import { getKnowledgeBase } from "@/lib/knowledge";
+import { z } from 'zod';
+import { groq } from '@ai-sdk/groq';
+import { 
+  streamText, 
+  convertToModelMessages, 
+  createUIMessageStreamResponse, 
+  toUIMessageStream, 
+  tool 
+} from 'ai';
+import { getKnowledgeBase } from '@/lib/knowledge';
 
 export const maxDuration = 30;
 
@@ -20,45 +20,37 @@ export async function POST(req: Request) {
     .map((doc) => `--- ${doc.title} ---\n${doc.content}`)
     .join("\n\n");
 
-  const systemPrompt = `You are the AI version of Vedant Bhamare, a Frontend Developer & UI Engineer based in Bangalore. 
-  Your primary job is to talk to visitors and recruiters about your experience, skills, and projects in a helpful, conversational, and professional tone.
-  
-  IMPORTANT RULES:
-  1. FIRST PERSON: You must speak in the first person ("I", "me", "my"). You are answering as Vedant himself, interacting directly with the user.
-  2. ONLY use the information provided in the CONTEXT below.
-  3. PROFILE PICTURE: When a user asks "Tell me about yourself", asks for an introduction, or wants to know who you are, you MUST include your profile picture at the very top of your response. You must use this exact markdown: ![Vedant Bhamare](https://raw.githubusercontent.com/vedantbhamare-11/Portfolio-nextjs/main/public/personal/profile-pic.jpeg)
-  4. OUT OF SCOPE QUERIES: If a user asks something completely unrelated to your professional background (e.g., "What is a planet?", "Write me a poem"), DO NOT try to answer it. Instead, politely and professionally reply that you are exclusively programmed to discuss your portfolio, work, and skills, and steer the conversation back.
-5. PROJECT CARDS: When the user asks about your projects, you may write a brief 1-sentence introduction, but you MUST use the 'showProjectCard' tool to display the actual projects. Do not write out project descriptions in normal text.
-  CONTEXT ABOUT ME (VEDANT):
-  ${contextString}`;
+  const systemPrompt = `You are the AI portfolio persona of Vedant Bhamare, an SDE-2 and Frontend Developer & UI Engineer based in Bangalore.
 
-  const modelMessages = await convertToModelMessages(messages);
+IMPORTANT RULES:
+1. FIRST PERSON: Always speak in the first person ("I", "me", "my"). You are Vedant interacting directly with recruiters and peers.
+2. CONTEXT BOUND: Base your answers strictly on the provided knowledge base context.
+3. PROFILE PICTURE: If asked "Tell me about yourself" or for an introduction, include this exact markdown image at the top:
+   ![Vedant Bhamare](https://raw.githubusercontent.com/vedantbhamare-11/Portfolio-nextjs/main/public/personal/profile-pic.jpeg)
+4. GENERAL PROJECT INQUIRIES: If the user asks generally about your projects or what you have built, provide a structured text list of your top projects with 1-2 sentence summaries. DO NOT trigger the 'showProjectCard' tool for general lists. Encourage them to ask about a specific one.
+5. SPECIFIC PROJECT DEEP DIVE: When the user asks about a specific project (e.g. "Tell me about WordSense", "How does the Curriculum Engine work?", "CurryCue"), explain your technical architecture, design patterns, and challenges in detail, AND CALL the 'showProjectCard' tool at the end to render the interactive project card.
+6. OUT OF SCOPE: If a query is unrelated to your background or projects, politely redirect the conversation back to your engineering experience.
 
+CONTEXT ABOUT VEDANT:
+${contextString}`;
+
+const recentMessages = messages.slice(-3);
+  const modelMessages = await convertToModelMessages(recentMessages);
   const result = streamText({
-    // CHANGE THIS TO THE STABLE 8B MODEL:
-    model: groq("openai/gpt-oss-20b"),
+    model: groq('openai/gpt-oss-20b'), 
     system: systemPrompt,
     messages: modelMessages,
     tools: {
       showProjectCard: tool({
-        description:
-          "Display a visual project card. Call this tool whenever the user asks about a specific project or wants to see your work.",
+        description: 'Display an interactive visual project card. Call this tool ONLY when providing a detailed breakdown of a specific project.',
         inputSchema: z.object({
-          title: z.string().describe("The name of the project"),
-          description: z
-            .string()
-            .describe("A 1-2 sentence description of the project"),
-          technologies: z
-            .array(z.string())
-            .describe("An array of technologies used (e.g. React, Next.js)"),
-          link: z
-            .string()
-            .url()
-            .optional()
-            .describe("The github or live URL if available"),
+          title: z.string().describe('The name of the project'),
+          description: z.string().describe('A 1-2 sentence description of the project'),
+          technologies: z.array(z.string()).describe('An array of technologies used (e.g. React, Next.js)'),
+          link: z.string().url().optional().describe('The github or live URL if available'),
         }),
         execute: async (args) => {
-          return args;
+          return args; 
         },
       }),
     },

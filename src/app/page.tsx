@@ -3,38 +3,42 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Briefcase, Layers, Sparkles, Mail, ArrowRight, Bot, Loader2, Plus, Code } from "lucide-react";
+import { ArrowRight, Bot, Loader2, Plus } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
-
-const QUICK_ACTIONS = [
-  { id: "me", label: "Me", icon: User, prompt: "Tell me about Vedant." },
-  { id: "projects", label: "Projects", icon: Briefcase, prompt: "What projects has Vedant built?" },
-  { id: "skills", label: "Skills", icon: Layers, prompt: "What are Vedant's technical skills?" },
-  { id: "fun", label: "Fun", icon: Sparkles, prompt: "Tell me something interesting about Vedant." },
-  { id: "contact", label: "Contact", icon: Mail, prompt: "How can I contact Vedant?" },
-];
+import { QUICK_ACTIONS, PRELOADED_RESPONSES } from "@/lib/chat-config";
+import ChatMessage from "@/components/chat/ChatMessage";
 
 export default function Home() {
   const [input, setInput] = useState("");
   
-  // FIX: Formatted for the new SDK structure and suppressed strict TS errors
-  const { messages, sendMessage, status, error, setMessages } = useChat({
-    initialMessages: [
-      {
-        id: 'welcome',
-        role: 'assistant',
-        parts: [{ type: 'text', text: "Hi there! 👋 I'm Vedant's AI portfolio assistant.\n\nI can help you explore his background as a Frontend Developer & UI Engineer. Feel free to ask me about his **Skills**, check out his **Projects**, or get his **Contact** information. What would you like to explore first?" }]
-      }
-    ] as any
-  } as any);
+  // RESTORED: Start with an empty chat so the landing UI shows!
+  const { messages, sendMessage, status, error, setMessages } = useChat();
   
   const isLoading = status === 'submitted' || status === 'streaming';
 
-  const handleActionClick = (prompt: string) => {
-    sendMessage({ text: prompt });
+  const handleActionClick = (actionId: string, prompt: string) => {
+    if (isLoading) return;
+
+    const preloadedText = PRELOADED_RESPONSES[actionId];
+
+    if (preloadedText) {
+      const userMessage = {
+        id: `user-${Date.now()}`,
+        role: "user",
+        parts: [{ type: "text", text: prompt }]
+      };
+
+      const assistantMessage = {
+        id: `assistant-${Date.now() + 1}`,
+        role: "assistant",
+        parts: [{ type: "text", text: preloadedText }]
+      };
+
+      setMessages((prev: any) => [...prev, userMessage, assistantMessage]);
+    } else {
+      sendMessage({ text: prompt });
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -46,24 +50,20 @@ export default function Home() {
   };
 
   const handleReset = () => {
-    // FIX: Match the reset state to the new SDK structure
-    setMessages([
-      {
-        id: 'welcome',
-        role: 'assistant',
-        parts: [{ type: 'text', text: "Hi there! 👋 I'm Vedant's AI portfolio assistant.\n\nI can help you explore his background as a Frontend Developer & UI Engineer. Feel free to ask me about his **Skills**, check out his **Projects**, or get his **Contact** information. What would you like to explore first?" }]
-      } as any
-    ]);
+    // RESTORED: Reset to empty so the hero section comes back
+    setMessages([]);
     setInput("");
   };
 
   return (
     <main className="relative flex min-h-screen flex-col items-center selection:bg-neutral-200">
       
+      {/* BACKGROUND TEXT */}
       <div className="pointer-events-none fixed inset-0 flex items-center justify-center overflow-hidden opacity-[0.03] select-none">
         <span className="text-[18vw] font-black tracking-tighter">VEDANT</span>
       </div>
 
+      {/* FLOATING HEADER */}
       <AnimatePresence>
         {messages.length > 0 && (
           <motion.div
@@ -89,6 +89,7 @@ export default function Home() {
         )}
       </AnimatePresence>
 
+      {/* CHAT CONTAINER */}
       <div className={cn(
         "flex w-full max-w-3xl flex-col px-4 relative z-10",
         messages.length === 0 ? "flex-1 justify-center items-center" : "pt-24 pb-48" 
@@ -100,6 +101,7 @@ export default function Home() {
           </div>
         )}
 
+        {/* RESTORED: THE HERO LANDING SECTION */}
         {messages.length === 0 && (
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
@@ -117,169 +119,36 @@ export default function Home() {
           </motion.div>
         )}
 
-        {messages.length > 0 && (
-          <div className="flex flex-col space-y-6 w-full">
-            <AnimatePresence>
-              {messages.map((msg) => {
-                
-                const anyMsg = msg as any;
-                
-                const textParts = anyMsg.parts?.filter((p: any) => p.type === "text") || [];
-                const fallbackText = anyMsg.text || anyMsg.content || "";
-
-                const extractedTools: any[] = [];
-                if (Array.isArray(anyMsg.toolInvocations)) {
-                  extractedTools.push(...anyMsg.toolInvocations);
-                }
-                if (Array.isArray(anyMsg.parts)) {
-                  anyMsg.parts.forEach((p: any) => {
-                    if (p.type === 'tool-invocation' || p.type === 'tool-call' || p.type?.startsWith('tool-')) {
-                      extractedTools.push(p.toolInvocation || p);
-                    }
-                  });
-                }
-                
-                const uniqueTools = Array.from(new Map(extractedTools.map(t => [t.toolCallId || Math.random(), t])).values());
-
-                return (
-                  <motion.div
-                    key={msg.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={cn(
-                      "flex w-full gap-4 rounded-2xl p-4",
-                      msg.role === "user" ? "bg-neutral-50" : "bg-transparent"
-                    )}
-                  >
-                    <div className={cn(
-                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg mt-1",
-                      msg.role === "user" ? "bg-neutral-200 text-neutral-600" : "bg-blue-600 text-white"
-                    )}>
-                      {msg.role === "user" ? <User className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
-                    </div>
-                    
-                    <div className="flex-1 space-y-2 overflow-hidden text-neutral-800">
-                      
-                      {/* RENDER TEXT ONLY */}
-                      {textParts.length > 0 ? (
-                        textParts.map((part: any, index: number) => {
-                          return (
-                            <ReactMarkdown 
-                              key={`text-${index}`}
-                              remarkPlugins={[remarkGfm]}
-                              components={{
-                                p: ({node, ...props}) => <p className="mb-4 last:mb-0 leading-relaxed" {...props} />,
-                                ul: ({node, ...props}) => <ul className="mb-4 list-disc pl-6 space-y-1" {...props} />,
-                                ol: ({node, ...props}) => <ol className="mb-4 list-decimal pl-6 space-y-1" {...props} />,
-                                li: ({node, ...props}) => <li className="leading-relaxed" {...props} />,
-                                strong: ({node, ...props}) => <strong className="font-semibold text-neutral-950" {...props} />,
-                                a: ({node, ...props}) => <a className="text-blue-600 hover:underline font-medium" target="_blank" rel="noopener noreferrer" {...props} />,
-                                img: ({node, ...props}) => <img className="rounded-xl shadow-sm border border-neutral-200 my-4 max-w-full h-auto max-h-72 object-cover" alt={props.alt || "Vedant"} {...props} />,
-                              }}
-                            >
-                              {part.text}
-                            </ReactMarkdown>
-                          )
-                        })
-                      ) : fallbackText ? (
-                        <ReactMarkdown 
-                          remarkPlugins={[remarkGfm]}
-                          components={{
-                            p: ({node, ...props}) => <p className="mb-4 last:mb-0 leading-relaxed" {...props} />,
-                            img: ({node, ...props}) => <img className="rounded-xl shadow-sm border border-neutral-200 my-4 max-w-full h-auto max-h-72 object-cover" alt={props.alt || "Vedant"} {...props} />,
-                          }}
-                        >
-                          {fallbackText}
-                        </ReactMarkdown>
-                      ) : null}
-
-                      {/* RENDER TOOLS */}
-                      {uniqueTools.map((tool: any, index: number) => {
-                        const toolName = tool.toolName || (tool.type === 'tool-showProjectCard' ? 'showProjectCard' : null);
-
-                        if (toolName === "showProjectCard") {
-                          const project = tool.input || tool.output || tool.args || tool.result;
-
-                          if (!project || Object.keys(project).length === 0) {
-                            return (
-                              <div key={`loading-${index}`} className="my-4 animate-pulse rounded-2xl border border-neutral-200 bg-neutral-50 p-5 h-32 flex items-center justify-center">
-                                <span className="text-sm font-medium text-neutral-400">Loading project details...</span>
-                              </div>
-                            )
-                          }
-
-                          return (
-                            <motion.div 
-                              key={`tool-${index}`}
-                              initial={{ opacity: 0, scale: 0.95 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              className="my-4 flex flex-col gap-3 rounded-2xl border border-neutral-200 bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
-                            >
-                              <div className="flex items-center gap-2">
-                                <Code className="h-5 w-5 text-blue-600" />
-                                <h3 className="font-bold text-neutral-900 text-lg">
-                                  {project.title || "Loading Project..."}
-                               </h3>
-                              </div>
-                              
-                              <p className="text-sm text-neutral-600 leading-relaxed">
-                                {project.description}
-                              </p>
-                              
-                              <div className="flex flex-wrap gap-2 mt-1">
-                                {project.technologies?.map((tech: string, i: number) => (
-                                  <span key={i} className="rounded-md bg-neutral-100 px-2 py-1 text-[11px] font-semibold tracking-wide text-neutral-600 uppercase">
-                                    {tech}
-                                  </span>
-                                ))}
-                              </div>
-
-                              {project.link && (
-                                <a 
-                                  href={project.link} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer" 
-                                  className="mt-2 w-fit inline-flex items-center gap-1.5 rounded-lg bg-neutral-900 px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-neutral-800"
-                                >
-                                  View Live Project <ArrowRight className="h-3 w-3" />
-                                </a>
-                              )}
-                            </motion.div>
-                          );
-                        }
-                        return null;
-                      })}
-
-                    </div>
-                  </motion.div>
-                );
-              })}
-              
-              {isLoading && messages[messages.length - 1]?.role === "user" && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex w-full gap-4 rounded-2xl p-4"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white">
-                    <Bot className="h-5 w-5" />
-                  </div>
-                  <div className="flex flex-1 items-center">
-                    <Loader2 className="h-5 w-5 animate-spin text-neutral-400" />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        )}
-
+        <div className="flex flex-col space-y-6 w-full">
+          <AnimatePresence>
+            {messages.map((msg) => (
+              <ChatMessage key={msg.id} msg={msg} />
+            ))}
+            
+            {isLoading && messages[messages.length - 1]?.role === "user" && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex w-full gap-4 rounded-2xl p-4"
+              >
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white">
+                  <Bot className="h-5 w-5" />
+                </div>
+                <div className="flex flex-1 items-center">
+                  <Loader2 className="h-5 w-5 animate-spin text-neutral-400" />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+        
+        {/* INPUT AREA & QUICK ACTIONS */}
         <div className={cn(
           "w-full max-w-2xl z-50 flex flex-col transition-all duration-500 ease-in-out",
-          messages.length === 0 
-            ? "mt-8" 
-            : "fixed bottom-6 left-1/2 -translate-x-1/2 px-4" 
+          messages.length === 0 ? "mt-8" : "fixed bottom-6 left-1/2 -translate-x-1/2 px-4" 
         )}>
           
+          {/* HORIZONTAL PILLS FOR ACTIVE CHAT */}
           {messages.length > 0 && (
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
@@ -291,7 +160,7 @@ export default function Home() {
                 return (
                   <button
                     key={action.id}
-                    onClick={() => handleActionClick(action.prompt)}
+                    onClick={() => handleActionClick(action.id, action.prompt)}
                     className="flex shrink-0 items-center gap-2 rounded-full border border-neutral-200 bg-white/80 backdrop-blur-md px-4 py-2 text-xs font-medium text-neutral-600 shadow-sm transition-colors hover:bg-neutral-50 hover:text-neutral-900"
                   >
                     <Icon className="h-3.5 w-3.5" />
@@ -302,17 +171,14 @@ export default function Home() {
             </motion.div>
           )}
 
-          <form 
-            onSubmit={handleSubmit}
-            className="relative flex w-full items-center shadow-lg rounded-full"
-          >
+          <form onSubmit={handleSubmit} className="relative flex w-full items-center shadow-lg rounded-full">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={isLoading}
-              placeholder="Ask me anything..."
-              className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-4 pl-6 pr-14 text-sm text-neutral-900 backdrop-blur-md transition-all placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none disabled:opacity-50"
+              placeholder="Ask me anything about my projects or experience..."
+              className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-4 pl-6 pr-14 text-sm text-neutral-900 backdrop-blur-md transition-all placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none focus:ring-4 focus:ring-neutral-100 disabled:opacity-50"
             />
             <button
               type="submit"
@@ -324,6 +190,7 @@ export default function Home() {
             </button>
           </form>
 
+          {/* RESTORED: THE BIG SQUARE BUTTONS FOR LANDING */}
           {messages.length === 0 && (
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
@@ -336,7 +203,7 @@ export default function Home() {
                 return (
                   <button
                     key={action.id}
-                    onClick={() => handleActionClick(action.prompt)}
+                    onClick={() => handleActionClick(action.id, action.prompt)}
                     className="group flex flex-col items-center justify-center rounded-2xl border border-neutral-100 bg-white px-4 py-3 shadow-[0_2px_8px_rgba(0,0,0,0.03)] transition-all duration-200 hover:-translate-y-0.5 hover:border-neutral-200 hover:shadow-md"
                   >
                     <Icon className="h-4 w-4 text-neutral-500 transition-colors group-hover:text-blue-600" />
