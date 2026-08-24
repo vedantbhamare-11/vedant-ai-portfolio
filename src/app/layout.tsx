@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Vedant Bhamare | AI Portfolio",
   description:
-    "Interactive AI portfolio of Vedant Bhamare, a Software Developer (SDE-2) & UI Engineer specializing in React, Next.js, and AI systems.",
+    "Interactive AI portfolio of Vedant Bhamare, a Software Developer & UI Engineer specializing in React, Next.js, and AI systems.",
   keywords: [
     "Vedant Bhamare",
     "Portfolio",
