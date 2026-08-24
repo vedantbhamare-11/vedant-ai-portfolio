@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Vedant Bhamare | AI Portfolio",
     description:
-      "Interactive AI portfolio of Vedant Bhamare, a Software Developer (SDE-2) & UI Engineer.",
+      "Interactive AI portfolio of Vedant Bhamare, a Software Developer & UI Engineer.",
     siteName: "Vedant Bhamare AI",
     type: "website",
   },
