@@ -256,7 +256,8 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
           <SocialLinks />
         )}
 
-        {msg.role === "assistant" && msg.id?.startsWith("preloaded-fun") && (
+        {/* CHANGED FROM 'preloaded-fun' TO 'preloaded-photography' */}
+        {msg.role === "assistant" && msg.id?.startsWith("preloaded-photography") && (
           <Photography />
         )}
 
