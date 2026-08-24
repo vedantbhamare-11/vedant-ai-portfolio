@@ -2,16 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Bot, Loader2, Plus, X } from "lucide-react"; // <-- Added X icon
+import { ArrowRight, Bot, Loader2, Plus, X } from "lucide-react"; 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { cn } from "@/lib/utils";
 import { QUICK_ACTIONS, PRELOADED_RESPONSES } from "@/lib/chat-config";
 import ChatMessage from "@/components/chat/ChatMessage";
+import Image from "next/image"; // <-- Added Image import
 
 export default function Home() {
   const [input, setInput] = useState("");
-  const [showBanner, setShowBanner] = useState(true); // <-- Banner State
+  const [showBanner, setShowBanner] = useState(true);
 
   const { messages, sendMessage, status, error, setMessages } = useChat({
     transport: new DefaultChatTransport({
@@ -32,7 +33,6 @@ export default function Home() {
   useEffect(() => {
     if (messages.length === 0) return;
 
-    // Only trigger a smooth scroll when a NEW message is added.
     setTimeout(() => {
       bottomRef.current?.scrollIntoView({
         behavior: "smooth",
@@ -121,7 +121,7 @@ export default function Home() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -40, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="fixed left-0 right-0 top-0 z-100 flex h-10 w-full items-center justify-center bg-[#7692FF] px-4 text-xs font-medium text-white shadow-md sm:text-sm"
+            className="fixed left-0 right-0 top-0 z-[100] flex h-10 w-full items-center justify-center bg-[#7692FF] px-4 text-xs font-medium text-white shadow-md sm:text-sm"
           >
             <p className="flex items-center gap-1.5">
               ✨ Looking for my classic visual portfolio?{" "}
@@ -159,12 +159,19 @@ export default function Home() {
             exit={{ opacity: 0, y: -20 }}
             className={cn(
               "fixed left-0 right-0 z-50 flex items-center justify-between border-b border-neutral-100 bg-white/80 px-4 py-4 shadow-sm backdrop-blur-md transition-all duration-300 sm:px-6",
-              showBanner ? "top-10" : "top-0" // Pushes header down if banner is visible
+              showBanner ? "top-10" : "top-0"
             )}
           >
             <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-900 text-white shadow-sm">
-                <span className="text-xs font-bold tracking-wider">VB</span>
+              {/* HEADER AVATAR - Updated with Image */}
+              <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-neutral-900 text-white">
+                <Image 
+                  src="/images/vedant-profile-pic.png" 
+                  alt="Vedant Bhamare" 
+                  width={100} 
+                  height={100} 
+                  className="h-full w-full object-cover"
+                />
               </div>
               <span className="hidden text-sm font-semibold text-neutral-800 sm:block">
                 Vedant AI
@@ -188,7 +195,7 @@ export default function Home() {
           messages.length === 0
             ? "flex-1 items-center justify-center"
             : showBanner
-            ? "pb-48 pt-32" // Extra padding if banner is visible
+            ? "pb-48 pt-32"
             : "pb-48 pt-24"
         )}
       >
@@ -208,8 +215,15 @@ export default function Home() {
             transition={{ duration: 0.4 }}
             className="flex w-full flex-col items-center text-center"
           >
-            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-900 text-white shadow-sm">
-              <span className="text-sm font-bold tracking-wider">VB</span>
+            {/* HERO AVATAR - Updated with Image */}
+            <div className="mb-3 flex h-14 w-14 items-center justify-center overflow-hidden rounded-xl bg-neutral-900 text-white ">
+               <Image 
+                  src="/images/vedant-profile-pic.png" 
+                  alt="Vedant Bhamare" 
+                  width={56} 
+                  height={56} 
+                  className="h-full w-full object-cover"
+                />
             </div>
             <p className="text-sm font-medium text-neutral-500">
               Hey, I'm Vedant 👋
