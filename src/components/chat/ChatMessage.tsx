@@ -5,29 +5,27 @@ import { User, Bot, Code, ArrowRight } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import SocialLinks from "./SocialLinks";
 import Photography from "./Photography";
+
 interface ChatMessageProps {
   msg: any;
 }
 
 export default function ChatMessage({ msg }: ChatMessageProps) {
-  const textParts = msg.parts?.filter((p: any) => p.type === "text") || [];
+  const messageRef = useRef<HTMLDivElement>(null);
 
+  const textParts = msg.parts?.filter((p: any) => p.type === "text") || [];
   const fallbackText = msg.text || msg.content || "";
 
   /*
    * Combine all text parts.
-   *
-   * For streamed responses, AI SDK progressively updates
-   * part.text. This gives us the latest complete streamed text.
    */
   const fullText = useMemo(() => {
     if (textParts.length > 0) {
       return textParts.map((part: any) => part.text || "").join("");
     }
-
     return fallbackText;
   }, [textParts, fallbackText]);
 
@@ -37,9 +35,7 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
   const [displayedText, setDisplayedText] = useState("");
 
   /*
-   * User messages should appear immediately.
-   *
-   * Assistant messages get the typewriter effect.
+   * User messages appear immediately. Assistant messages type out.
    */
   useEffect(() => {
     if (msg.role === "user") {
@@ -52,34 +48,19 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
       return;
     }
 
-    /*
-     * If the streamed text becomes shorter for some reason,
-     * reset the displayed text.
-     */
     if (fullText.length < displayedText.length) {
       setDisplayedText(fullText);
       return;
     }
 
-    /*
-     * Already caught up with the stream.
-     */
     if (displayedText.length >= fullText.length) {
       return;
     }
 
-    /*
-     * Reveal multiple characters at once.
-     *
-     * 1 character = slower / more human
-     * 2 characters = good balance
-     * 3 characters = fast
-     */
     const charactersToAdd = 5;
-
     const nextText = fullText.slice(
       0,
-      Math.min(displayedText.length + charactersToAdd, fullText.length),
+      Math.min(displayedText.length + charactersToAdd, fullText.length)
     );
 
     const timer = setTimeout(() => {
@@ -90,10 +71,34 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
   }, [fullText, msg.role, displayedText]);
 
   /*
+   * BULLETPROOF AUTO-SCROLL
+   * Tracks the physical height of this specific message bubble.
+   */
+  useEffect(() => {
+    const el = messageRef.current;
+    if (!el) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      // Only force scroll if the user is near the bottom
+      const isNearBottom =
+        document.documentElement.scrollHeight - window.scrollY - window.innerHeight < 400;
+
+      if (isNearBottom) {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: "auto",
+        });
+      }
+    });
+
+    resizeObserver.observe(el);
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  /*
    * Extract tool calls
    */
   const extractedTools: any[] = [];
-
   if (Array.isArray(msg.toolInvocations)) {
     extractedTools.push(...msg.toolInvocations);
   }
@@ -110,31 +115,29 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
     });
   }
 
-  /*
-   * Remove duplicate tools
-   */
   const uniqueTools = Array.from(
     new Map(
-      extractedTools.map((tool) => [tool.toolCallId || Math.random(), tool]),
-    ).values(),
+      extractedTools.map((tool) => [tool.toolCallId || Math.random(), tool])
+    ).values()
   );
 
   return (
     <motion.div
+      ref={messageRef}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
         "flex w-full gap-4 rounded-2xl p-4",
-        msg.role === "user" ? "bg-neutral-50" : "bg-transparent",
+        msg.role === "user" ? "bg-neutral-50" : "bg-transparent"
       )}
     >
       {/* AVATAR */}
       <div
         className={cn(
-          "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg mt-1",
+          "mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
           msg.role === "user"
             ? "bg-neutral-200 text-neutral-600"
-            : "bg-blue-600 text-white",
+            : "bg-blue-600 text-white"
         )}
       >
         {msg.role === "user" ? (
@@ -146,52 +149,41 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
 
       {/* MESSAGE CONTENT */}
       <div className="flex-1 space-y-2 overflow-hidden text-neutral-800">
-        {/* 
-            TEXT RENDERER
-         */}
-
+        {/* TEXT RENDERER */}
         {displayedText && (
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
               p: ({ node, ...props }) => (
-                <p className="mb-4 last:mb-0 leading-relaxed" {...props} />
+                <p className="mb-4 leading-relaxed last:mb-0" {...props} />
               ),
-
               ul: ({ node, ...props }) => (
-                <ul className="mb-4 list-disc pl-6 space-y-1" {...props} />
+                <ul className="mb-4 space-y-1 pl-6 list-disc" {...props} />
               ),
-
               ol: ({ node, ...props }) => (
-                <ol className="mb-4 list-decimal pl-6 space-y-1" {...props} />
+                <ol className="mb-4 space-y-1 pl-6 list-decimal" {...props} />
               ),
-
               li: ({ node, ...props }) => (
                 <li className="leading-relaxed" {...props} />
               ),
-
               strong: ({ node, ...props }) => (
                 <strong className="font-semibold text-neutral-950" {...props} />
               ),
-
               a: ({ node, ...props }) => (
                 <a
-                  className="text-blue-600 hover:underline font-medium"
+                  className="font-medium text-blue-600 hover:underline"
                   target="_blank"
                   rel="noopener noreferrer"
                   {...props}
                 />
               ),
-
               img: ({ node, ...props }) => (
                 <img
-                  className="rounded-xl shadow-sm border border-neutral-200 my-4 max-w-full h-auto max-h-72 object-cover"
+                  className="my-4 h-auto max-h-72 max-w-full rounded-xl border border-neutral-200 object-cover shadow-sm"
                   alt={props.alt || "Vedant"}
                   {...props}
                 />
               ),
-
-              // TABLE STYLING
               table: ({ node, ...props }) => (
                 <div className="my-5 w-full overflow-x-auto rounded-xl border border-neutral-200">
                   <table
@@ -200,62 +192,44 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
                   />
                 </div>
               ),
-
               thead: ({ node, ...props }) => (
                 <thead className="bg-neutral-50" {...props} />
               ),
-
               tbody: ({ node, ...props }) => (
                 <tbody className="bg-white" {...props} />
               ),
-
               tr: ({ node, ...props }) => (
                 <tr
                   className="border-b border-neutral-200 last:border-b-0"
                   {...props}
                 />
               ),
-
               th: ({ node, ...props }) => (
                 <th
                   className="border border-neutral-200 px-4 py-3 text-left font-semibold text-neutral-900"
                   {...props}
                 />
               ),
-
               td: ({ node, ...props }) => (
                 <td
                   className="border border-neutral-200 px-4 py-3 text-left text-neutral-700"
                   {...props}
                 />
               ),
-
               code: ({ node, className, children, ...props }) => (
                 <code
                   className={cn(
                     "font-mono text-[13px] text-neutral-100",
-                    className,
+                    className
                   )}
                   {...props}
                 >
                   {children}
                 </code>
               ),
-
               pre: ({ node, ...props }) => (
                 <pre
-                  className="
-      my-5
-      overflow-x-auto
-      rounded-xl
-      border border-neutral-800
-      bg-neutral-950
-      p-5
-      text-[13px]
-      leading-6
-      text-neutral-100
-      shadow-sm
-    "
+                  className="my-5 overflow-x-auto rounded-xl border border-neutral-800 bg-neutral-950 p-5 text-[13px] leading-6 text-neutral-100 shadow-sm"
                   {...props}
                 />
               ),
@@ -266,7 +240,6 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
         )}
 
         {/* TYPEWRITER CURSOR */}
-
         {msg.role === "assistant" && displayedText.length < fullText.length && (
           <motion.span
             animate={{ opacity: [1, 0, 1] }}
@@ -278,36 +251,29 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
           />
         )}
 
-        {/*
-            CUSTOM COMPONENTS
-        */}
+        {/* CUSTOM COMPONENTS */}
+        {msg.role === "assistant" && msg.id?.startsWith("preloaded-contact") && (
+          <SocialLinks />
+        )}
 
-        {/* Contact Quick Action -> Render Social Links */}
-        {msg.role === "assistant" &&
-          msg.id?.startsWith("preloaded-contact") && <SocialLinks />}
-
-        {/* Fun Quick Action -> Render Photography Grid */}
         {msg.role === "assistant" && msg.id?.startsWith("preloaded-fun") && (
           <Photography />
         )}
-        {/*
-            TOOL RENDERER
-        */}
 
+        {/* TOOL RENDERER */}
         {uniqueTools.map((tool: any, index: number) => {
           const toolName =
             tool.toolName ||
             (tool.type === "tool-showProjectCard" ? "showProjectCard" : null);
 
           if (toolName === "showProjectCard") {
-            const project =
-              tool.input || tool.output || tool.args || tool.result;
+            const project = tool.input || tool.output || tool.args || tool.result;
 
             if (!project || Object.keys(project).length === 0) {
               return (
                 <div
                   key={`loading-${index}`}
-                  className="my-4 animate-pulse rounded-2xl border border-neutral-200 bg-neutral-50 p-5 h-32 flex items-center justify-center"
+                  className="my-4 flex h-32 animate-pulse items-center justify-center rounded-2xl border border-neutral-200 bg-neutral-50 p-5"
                 >
                   <span className="text-sm font-medium text-neutral-400">
                     Loading project details...
@@ -319,33 +285,26 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
             return (
               <motion.div
                 key={`tool-${index}`}
-                initial={{
-                  opacity: 0,
-                  scale: 0.95,
-                }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
                 className="my-4 flex flex-col gap-3 rounded-2xl border border-neutral-200 bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
               >
                 <div className="flex items-center gap-2">
                   <Code className="h-5 w-5 text-blue-600" />
-
-                  <h3 className="font-bold text-neutral-900 text-lg">
+                  <h3 className="text-lg font-bold text-neutral-900">
                     {project.title || "Featured Project"}
                   </h3>
                 </div>
 
-                <p className="text-sm text-neutral-600 leading-relaxed">
+                <p className="text-sm leading-relaxed text-neutral-600">
                   {project.description}
                 </p>
 
-                <div className="flex flex-wrap gap-2 mt-1">
+                <div className="mt-1 flex flex-wrap gap-2">
                   {project.technologies?.map((tech: string, i: number) => (
                     <span
                       key={i}
-                      className="rounded-md bg-neutral-100 px-2 py-1 text-[11px] font-semibold tracking-wide text-neutral-600 uppercase"
+                      className="rounded-md bg-neutral-100 px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-neutral-600"
                     >
                       {tech}
                     </span>
@@ -357,7 +316,7 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-2 w-fit inline-flex items-center gap-1.5 rounded-lg bg-neutral-900 px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-neutral-800"
+                    className="mt-2 flex w-fit items-center gap-1.5 rounded-lg bg-neutral-900 px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-neutral-800"
                   >
                     View Live Project
                     <ArrowRight className="h-3 w-3" />
@@ -366,7 +325,6 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
               </motion.div>
             );
           }
-
           return null;
         })}
       </div>
