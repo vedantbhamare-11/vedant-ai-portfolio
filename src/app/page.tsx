@@ -8,11 +8,34 @@ import { DefaultChatTransport } from "ai";
 import { cn } from "@/lib/utils";
 import { QUICK_ACTIONS, PRELOADED_RESPONSES } from "@/lib/chat-config";
 import ChatMessage from "@/components/chat/ChatMessage";
-import Image from "next/image"; // <-- Added Image import
+import Image from "next/image";
+
+// =========================================================
+// TYPEWRITER PLACEHOLDERS
+// =========================================================
+const PLACEHOLDERS = [
+  "Ask me anything about my projects or experience...",
+  "What is your experience with React, Next.js, and TypeScript?",
+  "Tell me about WordSense AI and how it achieves 500+ tokens/sec...",
+  "How did you build the CurryCue multimodal kitchen assistant?",
+  "What technologies did you use for the AI Curriculum Design Engine?",
+  "Tell me about your time as a Developer & AI/ML Engineer at TMCC...",
+  "What was your role as a freelance developer and mentor at WOFO?",
+  "Can you tell me about your background in Machine Learning and Computer Vision?",
+  "What is your approach to frontend performance optimization?",
+  "Tell me about your photography and creative interests...",
+  "Where do you like to travel and explore?",
+  "How can we get in touch or collaborate on a project?",
+];
 
 export default function Home() {
   const [input, setInput] = useState("");
   const [showBanner, setShowBanner] = useState(true);
+
+  // Typewriter States
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [currentPlaceholder, setCurrentPlaceholder] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { messages, sendMessage, status, error, setMessages } = useChat({
     transport: new DefaultChatTransport({
@@ -23,13 +46,42 @@ export default function Home() {
   const isLoading = status === "submitted" || status === "streaming";
 
   // =========================================================
+  // TYPEWRITER EFFECT
+  // =========================================================
+  useEffect(() => {
+    const typingSpeed = isDeleting ? 30 : 50; // Faster when deleting
+    const pauseTime = 2000; // How long to wait before deleting
+
+    const fullText = PLACEHOLDERS[placeholderIndex];
+    let timer: NodeJS.Timeout;
+
+    if (!isDeleting && currentPlaceholder === fullText) {
+      // Pause at the end of typing
+      timer = setTimeout(() => setIsDeleting(true), pauseTime);
+    } else if (isDeleting && currentPlaceholder === "") {
+      // Move to the next string once deleted
+      setIsDeleting(false);
+      setPlaceholderIndex((prev) => (prev + 1) % PLACEHOLDERS.length);
+    } else {
+      // Type or delete characters
+      timer = setTimeout(() => {
+        setCurrentPlaceholder(
+          fullText.substring(
+            0,
+            currentPlaceholder.length + (isDeleting ? -1 : 1)
+          )
+        );
+      }, typingSpeed);
+    }
+
+    return () => clearTimeout(timer);
+  }, [currentPlaceholder, isDeleting, placeholderIndex]);
+
+  // =========================================================
   // BOTTOM SCROLL ANCHOR
   // =========================================================
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  // =========================================================
-  // AUTO SCROLL (New Message Trigger)
-  // =========================================================
   useEffect(() => {
     if (messages.length === 0) return;
 
@@ -121,7 +173,7 @@ export default function Home() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -40, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="fixed left-0 right-0 top-0 z-[100] flex h-10 w-full items-center justify-center bg-[#7692FF] px-4 text-xs font-medium text-white shadow-md sm:text-sm"
+            className="fixed left-0 right-0 top-0 z-100 flex h-10 w-full items-center justify-center bg-[#7692FF] px-4 text-xs font-medium text-white shadow-md sm:text-sm"
           >
             <p className="flex items-center gap-1.5">
               ✨ Looking for my classic visual portfolio?{" "}
@@ -307,8 +359,8 @@ export default function Home() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={isLoading}
-              placeholder="Ask me anything about my projects or experience..."
-              className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-4 pl-6 pr-14 text-sm text-neutral-900 backdrop-blur-md transition-all placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none focus:ring-4 focus:ring-neutral-100 disabled:opacity-50"
+              placeholder={currentPlaceholder || "|"} // <-- Updated with Typewriter placeholder
+              className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-4 pl-6 pr-14 text-sm text-neutral-900 backdrop-blur-md transition-all placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none  disabled:opacity-50"
             />
             <button
               type="submit"
