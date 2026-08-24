@@ -2,9 +2,7 @@
 
 ![Vedant Bhamare](https://raw.githubusercontent.com/vedantbhamare-11/Portfolio-nextjs/main/public/personal/profile-pic.jpeg)
 
-Vedant is a seasoned software developer (currently an SDE-2 at TMCC) who builds sleek UIs and robust back-ends alike. Famously known as a "Python-ninja and JavaScript wizard" who can "code circles around your problems," he thrives with modern web and mobile stacks.
-
-He is an advocate for high performance, exceptional user experiences (like zero-latency streaming), and continuous learning.
+Vedant is an accomplished software developer, currently serving as an SDE-2 at TMCC, with comprehensive expertise in engineering sophisticated user interfaces and scalable backend architectures. Recognized for his strong technical proficiency in Python and JavaScript, he excels in utilizing modern web and mobile technology stacks to deliver high-impact results. He is deeply committed to system performance, delivering exceptional user experiences—such as zero-latency streaming—and pursuing continuous professional growth.
 
 ## The Elevator Pitch
 

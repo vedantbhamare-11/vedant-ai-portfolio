@@ -9,10 +9,7 @@ import dotenv from "dotenv";
 // Load environment variables from .env.local
 dotenv.config({ path: ".env.local" });
 
-// ==========================================
 // ENVIRONMENT VARIABLES
-// ==========================================
-
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
 
@@ -24,10 +21,7 @@ if (!PINECONE_API_KEY) {
   throw new Error("❌ PINECONE_API_KEY is missing from .env.local");
 }
 
-// ==========================================
 // INITIALIZE CLIENTS
-// ==========================================
-
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 const pc = new Pinecone({
@@ -40,10 +34,7 @@ const embeddingModel = genAI.getGenerativeModel({
   model: "gemini-embedding-001",
 });
 
-// ==========================================
 // EMBEDDING FUNCTION
-// ==========================================
-
 async function generateEmbedding(text: string) {
   const result = await embeddingModel.embedContent(text);
 
@@ -51,18 +42,13 @@ async function generateEmbedding(text: string) {
   const embedding = result.embedding.values.slice(0, 768);
 
   if (embedding.length !== 768) {
-    throw new Error(
-      `Expected 768 dimensions but received ${embedding.length}`,
-    );
+    throw new Error(`Expected 768 dimensions but received ${embedding.length}`);
   }
 
   return embedding;
 }
 
-// ==========================================
 // STORE DOCUMENT
-// ==========================================
-
 async function embedAndStore(
   id: string,
   content: string,
@@ -94,15 +80,9 @@ async function embedAndStore(
   }
 }
 
-// ==========================================
 // SEED PROJECTS
-// ==========================================
-
 async function seedProjects() {
-  const directoryPath = path.join(
-    process.cwd(),
-    "knowledge/projects",
-  );
+  const directoryPath = path.join(process.cwd(), "knowledge/projects");
 
   if (!fs.existsSync(directoryPath)) {
     console.log("⚠️ Projects directory not found.");
@@ -113,22 +93,14 @@ async function seedProjects() {
     .readdirSync(directoryPath)
     .filter((file) => file.endsWith(".md"));
 
-  console.log(
-    `\n📁 Found ${files.length} project knowledge files.`,
-  );
+  console.log(`\n📁 Found ${files.length} project knowledge files.`);
 
   for (const file of files) {
     const projectId = file.replace(".md", "");
 
-    const filePath = path.join(
-      directoryPath,
-      file,
-    );
+    const filePath = path.join(directoryPath, file);
 
-    const content = fs.readFileSync(
-      filePath,
-      "utf-8",
-    );
+    const content = fs.readFileSync(filePath, "utf-8");
 
     await embedAndStore(
       `project-${projectId}`,
@@ -139,15 +111,9 @@ async function seedProjects() {
   }
 }
 
-// ==========================================
 // SEED PERSONAL / PERSONA KNOWLEDGE
-// ==========================================
-
 async function seedPersona() {
-  const directoryPath = path.join(
-    process.cwd(),
-    "knowledge/persona",
-  );
+  const directoryPath = path.join(process.cwd(), "knowledge/persona");
 
   if (!fs.existsSync(directoryPath)) {
     console.log("⚠️ Persona directory not found.");
@@ -158,22 +124,14 @@ async function seedPersona() {
     .readdirSync(directoryPath)
     .filter((file) => file.endsWith(".md"));
 
-  console.log(
-    `\n👤 Found ${files.length} persona knowledge files.`,
-  );
+  console.log(`\n👤 Found ${files.length} persona knowledge files.`);
 
   for (const file of files) {
     const sourceId = file.replace(".md", "");
 
-    const filePath = path.join(
-      directoryPath,
-      file,
-    );
+    const filePath = path.join(directoryPath, file);
 
-    const content = fs.readFileSync(
-      filePath,
-      "utf-8",
-    );
+    const content = fs.readFileSync(filePath, "utf-8");
 
     await embedAndStore(
       `persona-${sourceId}`,
@@ -184,15 +142,9 @@ async function seedPersona() {
   }
 }
 
-// ==========================================
 // MAIN SEED FUNCTION
-// ==========================================
-
 async function main() {
-  console.log("==========================================");
   console.log("🚀 Starting Portfolio RAG Seed");
-  console.log("==========================================");
-
   console.log("\n📦 Pinecone index: portfolio-index");
   console.log("🧠 Embedding model: gemini-embedding-001");
   console.log("📐 Embedding dimensions: 768");
@@ -201,9 +153,7 @@ async function main() {
 
   await seedPersona();
 
-  console.log("\n==========================================");
   console.log("🎉 RAG SEEDING COMPLETE");
-  console.log("==========================================");
 }
 
 main().catch((error) => {

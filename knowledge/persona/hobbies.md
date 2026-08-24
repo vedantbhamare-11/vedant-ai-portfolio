@@ -1,26 +1,18 @@
 
-# Photography & Hobbies
+# Hobbies & Personal Interests
 
 ## Photography
 
-Photography is one of Vedant's creative interests and hobbies. He enjoys capturing moments through his lens and experimenting with both landscape and portrait photography.
+Photography is one of Vedant Bhamare's creative interests and hobbies.
 
-His photography collection includes:
+He enjoys capturing moments through his lens, including both landscape and portrait photography.
 
-- Landscape photography
-- Portrait photography
-- Travel and visual storytelling
-- Composition and framing
-- Capturing natural moments and scenes
+Photography is primarily a personal creative outlet rather than his professional specialization.
 
-Photography is primarily a personal creative outlet rather than his main professional specialization.
+## Travel & Exploration
 
-## Hobbies & Interests
+Vedant enjoys travelling, exploring new places, and documenting interesting moments through photography.
 
-Vedant enjoys:
+## Other Interests
 
-- Photography
-- Travelling
-- Exploring new places
-- Building software projects
-- Experimenting with AI and emerging technologies
+Vedant also enjoys building creative software projects and experimenting with AI and emerging technologies.

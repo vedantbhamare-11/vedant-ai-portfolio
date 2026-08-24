@@ -15,7 +15,12 @@ const socialLinks: SocialLink[] = [
     url: "https://github.com/vedantbhamare-11",
     icon: (
       <span className="text-sm font-semibold">
-        <img width="48" height="48" src="https://img.icons8.com/fluency/48/github.png" alt="github"/>
+        <img
+          width="48"
+          height="48"
+          src="https://img.icons8.com/fluency/48/github.png"
+          alt="github"
+        />
       </span>
     ),
   },
@@ -24,7 +29,12 @@ const socialLinks: SocialLink[] = [
     url: "https://www.linkedin.com/in/vedantbhamare11/",
     icon: (
       <span className="text-xs font-bold">
-        <img width="32" height="32" src="https://img.icons8.com/small/32/linkedin.png" alt="linkedin"/>
+        <img
+          width="32"
+          height="32"
+          src="https://img.icons8.com/small/32/linkedin.png"
+          alt="linkedin"
+        />
       </span>
     ),
   },
@@ -33,7 +43,12 @@ const socialLinks: SocialLink[] = [
     url: "https://www.instagram.com/vedantbhamare_",
     icon: (
       <span className="text-sm font-semibold">
-        <img width="32" height="32" src="https://img.icons8.com/small/32/instagram-new.png" alt="instagram-new"/>
+        <img
+          width="32"
+          height="32"
+          src="https://img.icons8.com/small/32/instagram-new.png"
+          alt="instagram-new"
+        />
       </span>
     ),
   },
@@ -42,25 +57,31 @@ const socialLinks: SocialLink[] = [
     url: "https://x.com/VedantBhamare8",
     icon: (
       <span className="text-sm font-semibold leading-none">
-        <img width="32" height="32" src="https://img.icons8.com/tiny-bold/32/twitterx.png" alt="twitterx"/>
+        <img
+          width="32"
+          height="32"
+          src="https://img.icons8.com/tiny-bold/32/twitterx.png"
+          alt="twitterx"
+        />
       </span>
     ),
   },
   {
     name: "DEV.to",
     url: "https://dev.to/vedantbhamare",
-    icon: (
-      <span className="text-[10px] font-bold tracking-tight">
-        DEV
-      </span>
-    ),
+    icon: <span className="text-[10px] font-bold tracking-tight">DEV</span>,
   },
   {
     name: "Medium",
     url: "https://medium.com/@vedantdbhamare",
     icon: (
       <span className="text-sm font-serif font-bold">
-       <img width="48" height="48" src="https://img.icons8.com/color/48/medium-logo.png" alt="medium-logo"/>
+        <img
+          width="48"
+          height="48"
+          src="https://img.icons8.com/color/48/medium-logo.png"
+          alt="medium-logo"
+        />
       </span>
     ),
   },
@@ -69,16 +90,13 @@ const socialLinks: SocialLink[] = [
 export default function SocialLinks() {
   return (
     <div className="mt-5 w-full rounded-2xl border border-neutral-200 bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
-      
       {/* HEADER */}
       <div className="mb-4">
         <h3 className="text-sm font-semibold text-neutral-900">
           Connect with me
         </h3>
 
-        <p className="mt-1 text-xs text-neutral-500">
-          Find me across the web
-        </p>
+        <p className="mt-1 text-xs text-neutral-500">Find me across the web</p>
       </div>
 
       {/* SOCIAL LINKS */}

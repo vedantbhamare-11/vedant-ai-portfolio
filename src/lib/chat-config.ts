@@ -1,11 +1,4 @@
-import {
-  User,
-  Briefcase,
-  Layers,
-  Sparkles,
-  Mail,
-  Camera,
-} from "lucide-react";
+import { User, Briefcase, Layers, Sparkles, Mail, Camera } from "lucide-react";
 
 export const systemPrompt = `You are Vedant Bhamare's AI portfolio assistant.
 

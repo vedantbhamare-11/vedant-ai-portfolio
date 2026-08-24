@@ -7,10 +7,7 @@ import { ArrowRight, Bot, Loader2, Plus } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { cn } from "@/lib/utils";
-import {
-  QUICK_ACTIONS,
-  PRELOADED_RESPONSES,
-} from "@/lib/chat-config";
+import { QUICK_ACTIONS, PRELOADED_RESPONSES } from "@/lib/chat-config";
 import ChatMessage from "@/components/chat/ChatMessage";
 
 const PLACEHOLDER_QUERIES = [
@@ -29,10 +26,7 @@ const PLACEHOLDER_QUERIES = [
 export default function Home() {
   const [input, setInput] = useState("");
 
-  // ==========================================
   // TYPING PLACEHOLDER
-  // ==========================================
-
   const [placeholderText, setPlaceholderText] = useState("");
   const [queryIndex, setQueryIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -51,9 +45,7 @@ export default function Home() {
       // TYPE
       if (placeholderText.length < currentQuery.length) {
         timeout = setTimeout(() => {
-          setPlaceholderText(
-            currentQuery.slice(0, placeholderText.length + 1),
-          );
+          setPlaceholderText(currentQuery.slice(0, placeholderText.length + 1));
         }, 55);
       } else {
         // Pause after completely typing
@@ -65,58 +57,31 @@ export default function Home() {
       // DELETE
       if (placeholderText.length > 0) {
         timeout = setTimeout(() => {
-          setPlaceholderText(
-            currentQuery.slice(0, placeholderText.length - 1),
-          );
+          setPlaceholderText(currentQuery.slice(0, placeholderText.length - 1));
         }, 30);
       } else {
         setIsDeleting(false);
-        setQueryIndex(
-          (prev) => (prev + 1) % PLACEHOLDER_QUERIES.length,
-        );
+        setQueryIndex((prev) => (prev + 1) % PLACEHOLDER_QUERIES.length);
       }
     }
 
     return () => clearTimeout(timeout);
-  }, [
-    placeholderText,
-    isDeleting,
-    queryIndex,
-    input,
-  ]);
+  }, [placeholderText, isDeleting, queryIndex, input]);
 
-  // ==========================================
   // CHAT
-  // ==========================================
-
-  const {
-    messages,
-    sendMessage,
-    status,
-    error,
-    setMessages,
-  } = useChat({
+  const { messages, sendMessage, status, error, setMessages } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/chat",
     }),
   });
 
-  const isLoading =
-    status === "submitted" ||
-    status === "streaming";
+  const isLoading = status === "submitted" || status === "streaming";
 
-  // ==========================================
   // QUICK ACTION
-  // ==========================================
-
-  const handleActionClick = (
-    actionId: string,
-    prompt: string,
-  ) => {
+  const handleActionClick = (actionId: string, prompt: string) => {
     if (isLoading) return;
 
-    const preloadedText =
-      PRELOADED_RESPONSES[actionId];
+    const preloadedText = PRELOADED_RESPONSES[actionId];
 
     if (preloadedText) {
       const timestamp = Date.now();
@@ -143,11 +108,7 @@ export default function Home() {
         ],
       };
 
-      setMessages((prev) => [
-        ...prev,
-        userMessage,
-        assistantMessage,
-      ]);
+      setMessages((prev) => [...prev, userMessage, assistantMessage]);
 
       return;
     }
@@ -155,13 +116,8 @@ export default function Home() {
     sendMessage({ text: prompt });
   };
 
-  // ==========================================
   // SUBMIT
-  // ==========================================
-
-  const handleSubmit = (
-    e: React.FormEvent,
-  ) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!input.trim() || isLoading) return;
@@ -173,10 +129,7 @@ export default function Home() {
     setInput("");
   };
 
-  // ==========================================
   // RESET
-  // ==========================================
-
   const handleReset = () => {
     setMessages([]);
     setInput("");
@@ -189,19 +142,17 @@ export default function Home() {
 
   return (
     <main className="relative flex min-h-screen flex-col items-center selection:bg-neutral-200">
-      {/* ==========================================
+      {/* 
           BACKGROUND TEXT
-      ========================================== */}
+      */}
 
       <div className="pointer-events-none fixed inset-0 flex items-center justify-center overflow-hidden select-none opacity-[0.03]">
-        <span className="text-[18vw] font-black tracking-tighter">
-          VEDANT
-        </span>
+        <span className="text-[18vw] font-black tracking-tighter">VEDANT</span>
       </div>
 
-      {/* ==========================================
+      {/* 
           FLOATING HEADER
-      ========================================== */}
+      */}
 
       <AnimatePresence>
         {messages.length > 0 && (
@@ -239,9 +190,7 @@ export default function Home() {
           >
             <div className="flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-900 text-white shadow-sm">
-                <span className="text-xs font-bold tracking-wider">
-                  VB
-                </span>
+                <span className="text-xs font-bold tracking-wider">VB</span>
               </div>
 
               <span className="hidden text-sm font-semibold text-neutral-800 sm:block">
@@ -273,9 +222,9 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* ==========================================
+      {/* 
           CHAT CONTAINER
-      ========================================== */}
+       */}
 
       <div
         className={cn(
@@ -290,14 +239,13 @@ export default function Home() {
         {error && (
           <div className="absolute left-1/2 top-24 z-50 w-full max-w-md -translate-x-1/2 rounded-xl border border-red-200 bg-red-50 p-4 text-center text-sm text-red-600 shadow-sm">
             <strong>API Error:</strong>{" "}
-            {error.message ||
-              "Failed to connect to the AI model."}
+            {error.message || "Failed to connect to the AI model."}
           </div>
         )}
 
-        {/* ==========================================
+        {/*
             HERO
-        ========================================== */}
+        */}
 
         {messages.length === 0 && (
           <motion.div
@@ -315,9 +263,7 @@ export default function Home() {
             className="flex w-full flex-col items-center text-center"
           >
             <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-900 text-white shadow-sm">
-              <span className="text-sm font-bold tracking-wider">
-                VB
-              </span>
+              <span className="text-sm font-bold tracking-wider">VB</span>
             </div>
 
             <p className="text-sm font-medium text-neutral-500">
@@ -330,46 +276,41 @@ export default function Home() {
           </motion.div>
         )}
 
-        {/* ==========================================
+        {/* 
             MESSAGES
-        ========================================== */}
+        */}
 
         <div className="flex w-full flex-col space-y-6">
           <AnimatePresence>
             {messages.map((msg) => (
-              <ChatMessage
-                key={msg.id}
-                msg={msg}
-              />
+              <ChatMessage key={msg.id} msg={msg} />
             ))}
 
-            {isLoading &&
-              messages[messages.length - 1]
-                ?.role === "user" && (
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                  }}
-                  animate={{
-                    opacity: 1,
-                  }}
-                  className="flex w-full gap-4 rounded-2xl p-4"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white">
-                    <Bot className="h-5 w-5" />
-                  </div>
+            {isLoading && messages[messages.length - 1]?.role === "user" && (
+              <motion.div
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                className="flex w-full gap-4 rounded-2xl p-4"
+              >
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white">
+                  <Bot className="h-5 w-5" />
+                </div>
 
-                  <div className="flex flex-1 items-center">
-                    <Loader2 className="h-5 w-5 animate-spin text-neutral-400" />
-                  </div>
-                </motion.div>
-              )}
+                <div className="flex flex-1 items-center">
+                  <Loader2 className="h-5 w-5 animate-spin text-neutral-400" />
+                </div>
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
 
-        {/* ==========================================
+        {/* 
             INPUT AREA
-        ========================================== */}
+        */}
 
         <div
           className={cn(
@@ -379,9 +320,9 @@ export default function Home() {
               : "fixed bottom-6 left-1/2 -translate-x-1/2 px-4",
           )}
         >
-          {/* ==========================================
+          {/* 
               ACTIVE CHAT QUICK ACTIONS
-          ========================================== */}
+          */}
 
           {messages.length > 0 && (
             <motion.div
@@ -402,23 +343,17 @@ export default function Home() {
                 pb-2
                 [&::-webkit-scrollbar]:hidden
                 [-ms-overflow-style:none]
-                [scrollbar-width:none]
+                scrollbar-none
               "
             >
-              {QUICK_ACTIONS.map(
-                (action) => {
-                  const Icon = action.icon;
+              {QUICK_ACTIONS.map((action) => {
+                const Icon = action.icon;
 
-                  return (
-                    <button
-                      key={action.id}
-                      onClick={() =>
-                        handleActionClick(
-                          action.id,
-                          action.prompt,
-                        )
-                      }
-                      className="
+                return (
+                  <button
+                    key={action.id}
+                    onClick={() => handleActionClick(action.id, action.prompt)}
+                    className="
                         flex
                         shrink-0
                         items-center
@@ -438,19 +373,18 @@ export default function Home() {
                         hover:bg-neutral-50
                         hover:text-neutral-900
                       "
-                    >
-                      <Icon className="h-3.5 w-3.5" />
-                      {action.label}
-                    </button>
-                  );
-                },
-              )}
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                    {action.label}
+                  </button>
+                );
+              })}
             </motion.div>
           )}
 
-          {/* ==========================================
+          {/*
               INPUT
-          ========================================== */}
+          */}
 
           <form
             onSubmit={handleSubmit}
@@ -466,15 +400,9 @@ export default function Home() {
             <input
               type="text"
               value={input}
-              onChange={(e) =>
-                setInput(e.target.value)
-              }
+              onChange={(e) => setInput(e.target.value)}
               disabled={isLoading}
-              placeholder={
-                input.length === 0
-                  ? placeholderText
-                  : ""
-              }
+              placeholder={input.length === 0 ? placeholderText : ""}
               className="
                 w-full
                 rounded-full
@@ -499,10 +427,7 @@ export default function Home() {
 
             <button
               type="submit"
-              disabled={
-                !input.trim() ||
-                isLoading
-              }
+              disabled={!input.trim() || isLoading}
               className="
                 absolute
                 right-2
@@ -525,9 +450,9 @@ export default function Home() {
             </button>
           </form>
 
-          {/* ==========================================
+          {/*
               LANDING QUICK ACTIONS
-          ========================================== */}
+          */}
 
           {messages.length === 0 && (
             <motion.div
@@ -545,20 +470,14 @@ export default function Home() {
               }}
               className="mt-8 flex w-full flex-wrap justify-center gap-2"
             >
-              {QUICK_ACTIONS.map(
-                (action) => {
-                  const Icon = action.icon;
+              {QUICK_ACTIONS.map((action) => {
+                const Icon = action.icon;
 
-                  return (
-                    <button
-                      key={action.id}
-                      onClick={() =>
-                        handleActionClick(
-                          action.id,
-                          action.prompt,
-                        )
-                      }
-                      className="
+                return (
+                  <button
+                    key={action.id}
+                    onClick={() => handleActionClick(action.id, action.prompt)}
+                    className="
                         group
                         flex
                         flex-col
@@ -577,16 +496,15 @@ export default function Home() {
                         hover:border-neutral-200
                         hover:shadow-md
                       "
-                    >
-                      <Icon className="h-4 w-4 text-neutral-500 transition-colors group-hover:text-blue-600" />
+                  >
+                    <Icon className="h-4 w-4 text-neutral-500 transition-colors group-hover:text-blue-600" />
 
-                      <span className="mt-1.5 text-xs font-medium text-neutral-600 group-hover:text-neutral-900">
-                        {action.label}
-                      </span>
-                    </button>
-                  );
-                },
-              )}
+                    <span className="mt-1.5 text-xs font-medium text-neutral-600 group-hover:text-neutral-900">
+                      {action.label}
+                    </span>
+                  </button>
+                );
+              })}
             </motion.div>
           )}
         </div>

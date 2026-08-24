@@ -4,36 +4,22 @@ import { Pinecone } from "@pinecone-database/pinecone";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { systemPrompt } from "@/lib/chat-config";
 
-// -----------------------------------------------------
 // Initialize Gemini
-// -----------------------------------------------------
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
-const genAI = new GoogleGenerativeAI(
-  process.env.GEMINI_API_KEY!
-);
-
-// -----------------------------------------------------
 // Initialize Pinecone
-// -----------------------------------------------------
-
 const pc = new Pinecone({
   apiKey: process.env.PINECONE_API_KEY!,
 });
 
 const index = pc.index("portfolio-index");
 
-// -----------------------------------------------------
 // POST /api/chat
-// -----------------------------------------------------
-
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    // -------------------------------------------------
     // Normalize incoming AI SDK messages
-    // -------------------------------------------------
-
     const cleanMessages = messages
       .map((m: any) => {
         let textContent = "";
@@ -45,109 +31,68 @@ export async function POST(req: Request) {
             .filter((p: any) => p.type === "text")
             .map((p: any) => p.text)
             .join(" ");
-        } else if (
-          typeof m.content === "object" &&
-          m.content !== null
-        ) {
+        } else if (typeof m.content === "object" && m.content !== null) {
           textContent = m.content.text || "";
         }
 
         return {
-          role:
-            m.role === "assistant"
-              ? "assistant"
-              : "user",
+          role: m.role === "assistant" ? "assistant" : "user",
           content: textContent,
         };
       })
       .filter((m: any) => m.content.trim().length > 0);
 
-    // -------------------------------------------------
     // Get latest USER message
-    // -------------------------------------------------
-
     const latestUserMessage =
       [...cleanMessages]
         .reverse()
         .find(
-          (message: {
-            role: string;
-            content: string;
-          }) => message.role === "user"
-        )?.content ||
-      "Tell me about Vedant's projects.";
+          (message: { role: string; content: string }) =>
+            message.role === "user",
+        )?.content || "Tell me about Vedant's projects.";
 
-    console.log(
-      "========================================"
-    );
+    console.log("========================================");
 
-    console.log(
-      "USER QUERY:",
-      latestUserMessage
-    );
+    console.log("USER QUERY:", latestUserMessage);
 
-    // -------------------------------------------------
     // Generate Gemini embedding
-    // -------------------------------------------------
-
-    const embeddingModel =
-      genAI.getGenerativeModel({
-        model: "gemini-embedding-001",
-      });
+    const embeddingModel = genAI.getGenerativeModel({
+      model: "gemini-embedding-001",
+    });
 
     const embeddingResult =
-      await embeddingModel.embedContent(
-        latestUserMessage
-      );
+      await embeddingModel.embedContent(latestUserMessage);
 
-    const queryVector =
-      embeddingResult.embedding.values.slice(0, 768);
+    const queryVector = embeddingResult.embedding.values.slice(0, 768);
 
-    console.log(
-      "Embedding generated:",
-      queryVector.length
-    );
+    console.log("Embedding generated:", queryVector.length);
 
-    // -------------------------------------------------
     // Search Pinecone
-    // -------------------------------------------------
-
     const searchResults = await index.query({
       vector: queryVector,
       topK: 3,
       includeMetadata: true,
     });
 
-    console.log(
-      "Pinecone matches:",
-      searchResults.matches.length
-    );
+    console.log("Pinecone matches:", searchResults.matches.length);
 
-    // -------------------------------------------------
     // Extract retrieved project context
-    // -------------------------------------------------
-
-    const retrievedContext =
-      searchResults.matches
-        .map((match: any) => {
-          return match.metadata?.text;
-        })
-        .filter(
-          (text: unknown): text is string =>
-            typeof text === "string" &&
-            text.trim().length > 0
-        )
-        .join("\n\n---\n\n");
+    const retrievedContext = searchResults.matches
+      .map((match: any) => {
+        return match.metadata?.text;
+      })
+      .filter(
+        (text: unknown): text is string =>
+          typeof text === "string" && text.trim().length > 0,
+      )
+      .join("\n\n---\n\n");
 
     console.log(
       "Retrieved context preview:",
-      retrievedContext.substring(0, 1000)
+      retrievedContext.substring(0, 1000),
     );
 
-    // -------------------------------------------------
     // Build RAG system prompt
-    // -------------------------------------------------
-
     const ragSystemPrompt = `
 ${systemPrompt}
 
@@ -192,13 +137,8 @@ IMPORTANT INSTRUCTIONS:
    explanation.
 `;
 
-    // -------------------------------------------------
     // Generate response with Groq
-    // -------------------------------------------------
-
-    console.log(
-      "Sending request to Groq..."
-    );
+    console.log("Sending request to Groq...");
 
     const result = await streamText({
       model: groq("openai/gpt-oss-20b"),
@@ -207,29 +147,12 @@ IMPORTANT INSTRUCTIONS:
       temperature: 0.3,
     });
 
-    console.log(
-      "Groq streaming started."
-    );
+    console.log("Groq streaming started.");
 
-    // -------------------------------------------------
     // Return AI SDK UI message stream
-    // -------------------------------------------------
-
     return result.toUIMessageStreamResponse();
-
   } catch (error) {
-    console.error(
-      "========================================"
-    );
-
-    console.error(
-      "Chat API Error:",
-      error
-    );
-
-    console.error(
-      "========================================"
-    );
+    console.error("Chat API Error:", error);
 
     return new Response(
       JSON.stringify({
@@ -243,7 +166,7 @@ IMPORTANT INSTRUCTIONS:
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
   }
 }

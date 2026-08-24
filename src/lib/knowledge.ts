@@ -47,14 +47,14 @@ export function getKnowledgeBase(): KnowledgeDocument[] {
   return files.map((filePath) => {
     // Read the file contents
     const fileContents = fs.readFileSync(filePath, "utf8");
-    
+
     // Parse the frontmatter and the markdown body
     const { data: metadata, content } = matter(fileContents);
-    
+
     // Determine the category based on the folder name (e.g., 'projects', 'persona')
     const relativePath = path.relative(KNOWLEDGE_DIR, filePath);
     const category = path.dirname(relativePath).split(path.sep)[0] || "general";
-    
+
     // Use the filename as a unique ID
     const id = path.basename(filePath, ".md");
 

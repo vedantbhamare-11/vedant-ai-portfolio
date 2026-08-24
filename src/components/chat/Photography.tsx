@@ -10,10 +10,7 @@ interface PhotographyImage {
   orientation: "landscape" | "portrait";
 }
 
-// ==============================================
 // PHOTOGRAPHY IMAGES
-// ==============================================
-
 const images: PhotographyImage[] = [
   // LANDSCAPE
   { src: "/Photography/1.jpg", orientation: "landscape" },
@@ -33,10 +30,7 @@ const images: PhotographyImage[] = [
   { src: "/Photography/13.jpg", orientation: "portrait" },
 ];
 
-// ==============================================
 // SHUFFLE ARRAY
-// ==============================================
-
 function shuffleArray<T>(array: T[]): T[] {
   const result = [...array];
 
@@ -49,59 +43,30 @@ function shuffleArray<T>(array: T[]): T[] {
   return result;
 }
 
-// ==============================================
 // GET 2 LANDSCAPE + 2 PORTRAIT
-// ==============================================
-
 function getRandomPhotos(): PhotographyImage[] {
   const landscapes = shuffleArray(
-    images.filter(
-      (image) => image.orientation === "landscape",
-    ),
+    images.filter((image) => image.orientation === "landscape"),
   ).slice(0, 2);
 
   const portraits = shuffleArray(
-    images.filter(
-      (image) => image.orientation === "portrait",
-    ),
+    images.filter((image) => image.orientation === "portrait"),
   ).slice(0, 2);
-
-  /*
-    ROW 1
-    LANDSCAPE | PORTRAIT
-
-    ROW 2
-    PORTRAIT | LANDSCAPE
-  */
-
-  return [
-    landscapes[0],
-    portraits[0],
-    portraits[1],
-    landscapes[1],
-  ];
+  return [landscapes[0], portraits[0], portraits[1], landscapes[1]];
 }
 
-// ==============================================
 // MAIN COMPONENT
-// ==============================================
-
 export default function Photography() {
-  const [displayedImages, setDisplayedImages] =
-    useState<PhotographyImage[]>([]);
+  const [displayedImages, setDisplayedImages] = useState<PhotographyImage[]>(
+    [],
+  );
 
-  // ==========================================
   // INITIAL RANDOM PHOTOS
-  // ==========================================
-
   useEffect(() => {
     setDisplayedImages(getRandomPhotos());
   }, []);
 
-  // ==========================================
   // SHUFFLE
-  // ==========================================
-
   const shufflePhotos = () => {
     let nextPhotos = getRandomPhotos();
 
@@ -146,9 +111,9 @@ export default function Photography() {
           max-w-6xl
         "
       >
-        {/* =====================================
+        {/*
             HEADER
-        ===================================== */}
+        */}
 
         <div
           className="
@@ -214,21 +179,18 @@ export default function Photography() {
                 group-hover:rotate-180
               "
             />
-
             Shuffle
           </button>
         </div>
 
-        {/* =====================================
+        {/* 
             BENTO GALLERY
-        ===================================== */}
+         */}
 
         <AnimatePresence mode="wait">
           {displayedImages.length === 4 && (
             <motion.div
-              key={displayedImages
-                .map((image) => image.src)
-                .join("-")}
+              key={displayedImages.map((image) => image.src).join("-")}
               initial={{
                 opacity: 0,
               }}
@@ -248,10 +210,10 @@ export default function Photography() {
                 sm:gap-4
               "
             >
-              {/* =================================
+              {/*
                   ROW 1
                   LANDSCAPE + PORTRAIT
-              ================================= */}
+              */}
 
               <div
                 className="
@@ -283,10 +245,10 @@ export default function Photography() {
                 />
               </div>
 
-              {/* =================================
+              {/*
                   ROW 2
                   PORTRAIT + LANDSCAPE
-              ================================= */}
+              */}
 
               <div
                 className="
@@ -325,23 +287,15 @@ export default function Photography() {
   );
 }
 
-// ==============================================
 // PHOTO CARD
-// ==============================================
-
 interface PhotoCardProps {
   image: PhotographyImage;
   index: number;
   className?: string;
 }
 
-function PhotoCard({
-  image,
-  index,
-  className = "",
-}: PhotoCardProps) {
-  const isLandscape =
-    image.orientation === "landscape";
+function PhotoCard({ image, index, className = "" }: PhotoCardProps) {
+  const isLandscape = image.orientation === "landscape";
 
   return (
     <motion.div
@@ -373,19 +327,15 @@ function PhotoCard({
         ${className}
       `}
     >
-      {/* =====================================
+      {/*
           IMAGE
-      ===================================== */}
+      */}
 
       <div
         className={`
           relative
           w-full
-          ${
-            isLandscape
-              ? "aspect-[16/9]"
-              : "aspect-[9/16]"
-          }
+          ${isLandscape ? "aspect-video" : "aspect-9/16"}
         `}
       >
         <Image

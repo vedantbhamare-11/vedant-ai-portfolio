@@ -146,9 +146,9 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
 
       {/* MESSAGE CONTENT */}
       <div className="flex-1 space-y-2 overflow-hidden text-neutral-800">
-        {/* =========================
+        {/* 
             TEXT RENDERER
-        ========================== */}
+         */}
 
         {displayedText && (
           <ReactMarkdown
@@ -191,14 +191,11 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
                 />
               ),
 
-              // =========================
               // TABLE STYLING
-              // =========================
-
               table: ({ node, ...props }) => (
                 <div className="my-5 w-full overflow-x-auto rounded-xl border border-neutral-200">
                   <table
-                    className="w-full min-w-[600px] border-collapse text-sm"
+                    className="w-full min-w-150 border-collapse text-sm"
                     {...props}
                   />
                 </div>
@@ -277,28 +274,25 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
               duration: 0.8,
               repeat: Infinity,
             }}
-            className="ml-0.5 inline-block h-5 w-[2px] translate-y-1 bg-neutral-800"
+            className="ml-0.5 inline-block h-5 w-0.5 translate-y-1 bg-neutral-800"
           />
         )}
 
-       {/* =========================
+        {/*
             CUSTOM COMPONENTS
-        ========================== */}
+        */}
 
         {/* Contact Quick Action -> Render Social Links */}
         {msg.role === "assistant" &&
-          msg.id?.startsWith("preloaded-contact") && (
-            <SocialLinks />
-          )}
+          msg.id?.startsWith("preloaded-contact") && <SocialLinks />}
 
         {/* Fun Quick Action -> Render Photography Grid */}
-        {msg.role === "assistant" &&
-          msg.id?.startsWith("preloaded-fun") && (
-            <Photography />
-          )}
-        {/* =========================
+        {msg.role === "assistant" && msg.id?.startsWith("preloaded-fun") && (
+          <Photography />
+        )}
+        {/*
             TOOL RENDERER
-        ========================== */}
+        */}
 
         {uniqueTools.map((tool: any, index: number) => {
           const toolName =
