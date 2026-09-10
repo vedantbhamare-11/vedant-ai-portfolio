@@ -67,7 +67,7 @@ async function embedAndStore(
           values: embedding,
           metadata: {
             category,
-            source,
+            source, 
             text: content,
           },
         },
