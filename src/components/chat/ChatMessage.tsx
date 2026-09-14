@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { useEffect, useMemo, useState, useRef } from "react";
 import SocialLinks from "./SocialLinks";
 import Photography from "./Photography";
+import DevGame from "./DevGame";
 
 interface ChatMessageProps {
   msg: any;
@@ -259,6 +260,11 @@ export default function ChatMessage({ msg }: ChatMessageProps) {
         {/* CHANGED FROM 'preloaded-fun' TO 'preloaded-photography' */}
         {msg.role === "assistant" && msg.id?.startsWith("preloaded-photography") && (
           <Photography />
+        )}
+
+        {/* MINI SPI GAME */}
+        {msg.role === "assistant" && msg.id?.startsWith("preloaded-fun") && (
+          <DevGame />
         )}
 
         {/* TOOL RENDERER */}
