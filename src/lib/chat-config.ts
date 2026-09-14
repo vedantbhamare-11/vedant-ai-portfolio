@@ -198,11 +198,16 @@ So yes — **I love photography**, even though my primary professional focus is 
 
 Whether it's an opportunity, collaboration, or just a technical discussion, feel free to reach out or connect with me online.`,
 
-  fun: `A few things that reflect how I approach engineering and life:
+  fun: `I love blending complex logic with frontend engineering. 
 
-- ⚡ **Performance:** I designed WordSense AI to stream AI responses at **500+ tokens/sec** because I hate waiting for loading spinners.
-- 🎮 **From scratch:** I built the logic for my multiplayer **SPI game** entirely from scratch using vanilla JavaScript.
-- 🤖 **AI:** A lot of my recent work explores **LLMs, RAG, streaming, and multimodal AI systems**.
-- 📸 **Photography:** Outside of coding, I enjoy **photography**, including both landscape and portrait shots.
-- ✈️ **Exploration:** I love **travelling and exploring new places**, which gives me great excuses to practice my photography!`,
+To prove it, I ported an upgraded, highly-addictive mini-version of **SPI**—a multiplayer web game I originally built from scratch in vanilla JavaScript—right into this chat!
+
+**The "Nexus" Rules:**
+1. We start symmetrically on the outer ring. You are Green, my AI is Red.
+2. Click any empty highlighted node adjacent to your territory to expand.
+3. **The Catch:** Any enemy nodes adjacent to your placement are instantly conquered! 
+
+I built **3 Difficulty Modes** for the AI (Easy, Medium, and Hard). On Hard, it uses a Minimax algorithm to look one step ahead and counter your best move. 
+
+The game ends when the board is full. Make your move! 👇`,
 };
