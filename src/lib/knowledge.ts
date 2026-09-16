@@ -10,6 +10,7 @@ export type KnowledgeDocument = {
   title: string;
   content: string;
   metadata: Record<string, any>;
+  source: string;
 };
 
 // Target the knowledge directory at the root of the project
@@ -63,6 +64,7 @@ export function getKnowledgeBase(): KnowledgeDocument[] {
       category,
       title: metadata.title || metadata.name || id,
       content: content.trim(),
+      source: relativePath.split(path.sep).join("/"),
       metadata,
     };
   });
