@@ -1,974 +1,249 @@
+---
+title: Professional Experience
+type: profile
+visibility: public
+voice: third-person
+last_updated: 2026-09-14
+version: 2.0
+note: Contribution is separated from team/system scope throughout. Client-specific detail is excluded per the disclosure rule.
+---
 
-# Professional Experience & Background
+# Professional Experience
 
-Vedant Bhamare is a Software Developer and AI/ML Engineer with experience across frontend engineering, mobile application development, AI/ML systems, RAG applications, LLM integrations, system architecture, and product development.
+Vedant Bhamare is a software developer with roughly 18 months of full-time experience,
+spanning frontend engineering, mobile development, AI application work, and smaller
+end-to-end systems.
 
-His professional experience includes TMCC, WOFO, Procedure's Product Development 101 Bootcamp, and IBC Cube.
+| Organisation | Period | Location | Role |
+|---|---|---|---|
+| TMCC | Sept 2024 – Feb 2026 | Chennai | Software Developer |
+| WOFO | Feb – May 2024 | Pune | Freelance / early-stage engagement |
+| Procedure (Product Development 101) | Aug – Sept 2023 | Mumbai | Bootcamp participant |
+| IBC Cube | Jun – Aug 2023 | Mumbai | Machine Learning Engineer Intern |
+
+The last three took place during his B.Tech.
 
 ---
 
 # TMCC
 
-## Company Overview
+**Software Developer · Chennai · September 2024 – 28 February 2026**
 
-**Company:** TMCC
-**Period:** September 2024 – Present
-**Location:** Chennai, India
-**Role:** Developer and AI/ML Engineer
+TMCC is a service-based branding and technology company building web and mobile products
+for local and multinational clients, alongside internal products.
 
-TMCC is a service-based branding and technology company that helps local businesses and multinational companies build their digital products and SaaS platforms.
+Vedant's work covered frontend engineering, UI development, React, Next.js, React Native,
+TypeScript, Redux, AI and LLM application work, API integration, deployment, and
+performance optimisation. On most client systems he owned the frontend while backends were
+built by other engineers; on smaller systems he owned the whole thing.
 
-The company develops primarily web and mobile applications. TMCC also develops internal products and client-facing software.
+## Projects at TMCC
 
-Vedant's work at TMCC has involved both client-facing applications and internal products.
+### Rider Tracker — full ownership
 
----
+A React Native application tracking delivery riders in real time, including background
+location, device model and battery telemetry. Vedant built it end to end: React Native
+client, Python/Flask backend, SQLite storage, Firebase Phone Authentication, architecture
+and production deployment. Shipped to the Play Store. See `rider-tracker.md`.
 
-## Vedant's Role at TMCC
+### Interconnect — frontend
 
-At TMCC, Vedant works across several areas of software development, including:
+A LinkedIn-style professional networking and research-sharing platform built for a client,
+with both a Next.js web client and a React Native mobile client. Vedant built the frontend
+on both. His contributions included the chat interface with separate desktop and mobile
+interaction flows, debounced search and filtering, the analytics dashboard UI, and feed
+performance work. The Node.js, REST and MongoDB backend and the WebSocket server layer were
+built by others. The client reported the platform passing 1,000 users. See
+`interconnect.md`.
 
-- Frontend engineering
-- UI development
-- React
-- Next.js
-- React Native
-- TypeScript
-- Redux
-- RAG systems
-- LLM integrations
-- AI applications
-- System architecture
-- API integrations
-- Deployment
-- Performance optimization
-- Responsive application development
-- Mobile application development
+### SWINS — frontend plus selected backend endpoints
 
-His work is not limited to implementing UI screens. He has also contributed to architecture, AI integrations, backend functionality, deployment, and solving difficult application-level problems.
+An internal peer-appreciation product with a social feed, leaderboards and chat. Vedant
+built the React Native UI across onboarding, posts, profiles, chat and leaderboards,
+handled client-side state with Redux, implemented real-time feed updates and push
+notifications on the client, and wrote the points and leaderboard endpoints on the backend.
+The rest of the Node.js and MongoDB backend, and the WebSocket server layer, were built by
+others. Shipped to the Play Store. This was his first React Native project. See `swins.md`.
 
----
+### Whizz web application — frontend
 
-# TMCC Projects
+A local food-delivery product built around WhatsApp ordering and a web application,
+initially operating in Nungambakkam and Anna Nagar in Chennai. Vedant built the menu pages,
+client dashboards and order interfaces in Next.js, TypeScript and Redux, including the flow
+for tracking orders through delivery stages. The client reported the application passing
+500 users.
 
-## SWINS
+### TeambO — frontend
 
-### Overview
+An internal hierarchical task-tracking tool with boards, time tracking and analytics.
+Vedant's contribution was frontend and UI only.
 
-SWINS is an internal employee-engagement product.
+### Jupiter and Cashflow
 
-Employees can post appreciation for their peers. Other employees can interact with posts through likes and comments, and this activity contributes to a scoreboard.
+Client projects Vedant contributed to in a limited capacity. Not representative of his work
+and not featured in the portfolio.
 
-The system also analyzes positive and negative comments and includes a chat interface.
+## AI and LLM work at TMCC
 
-### Vedant's Role
+Vedant worked on LLM-backed application features including classification, structured
+extraction from documents, chatbots, summarisation, content generation, and evaluation of
+generated output. He has worked with or experimented across ChatGPT, Gemini, Claude,
+Perplexity, Groq and Hugging Face Llama models.
 
-**Role:** Frontend Developer
+He also worked on a retrieval-augmented generation system for a client. Details of that
+system are held privately and are not part of the public portfolio.
 
-### Technologies
+**Fine-tuning:** Vedant experimented with fine-tuning using the Hugging Face Trainer on a
+dataset, for learning purposes. This is exploratory experience and must not be described
+as production-scale fine-tuning.
 
-- React Native
-- TypeScript
+## Frontend engineering at TMCC
 
-### What Vedant Built
+Dashboards, forms, data visualisation, chat interfaces, mobile applications, responsive
+layouts, component systems, animation, state management, API integration, authentication
+flows and performance optimisation, across both web and mobile.
 
-Vedant developed the UI for the application, including:
+## Hardest problems solved at TMCC
 
-- Onboarding screens
-- Post screens
-- Profile screens
-- Chat screens
-- Leaderboard screens
-- Other application UI screens
+**Background location under a React Native CLI constraint.** Rider Tracker needed to keep
+tracking riders while backgrounded, and the project was constrained to React Native CLI,
+which did not provide this in the way Vedant initially expected. He investigated
+picture-in-picture approaches and home-screen mechanisms before settling on a hybrid: Expo
+libraries used inside the React Native CLI application, with Expo's TaskManager and
+Location APIs providing the background capability. It shipped to production.
 
-He was responsible for implementing the frontend experience across the application.
-
-### Technical Challenges
-
-SWINS was Vedant's first React Native project.
-
-Some of the challenges he encountered included:
-
-- Safe area handling
-- Touchability issues
-- Z-index and layering problems
-- State management
-- Understanding React Native-specific behavior
-
-### How He Solved These Problems
-
-Since this was his first React Native project, Vedant learned while developing the application.
-
-He regularly referred to:
-
-- Stack Overflow
-- Reddit
-- LLMs
-- Developer discussions
-- Documentation and community resources
-
-This allowed him to learn React Native concepts while solving real application problems.
-
-### Result
-
-SWINS was successfully deployed to the Google Play Store.
-
-The application made employee contributions more visible within the organization and helped encourage employee appreciation and performance tracking.
-
-### Link
-
-https://play.google.com/store/apps/details?id=com.tmcc.smallwins&pcampaignid=web_share
-
----
-
-# Interconnect
-
-## Overview
-
-Interconnect is a LinkedIn-style social media platform built for a client.
-
-Users can:
-
-- Publish research papers
-- Create posts
-- Interact with other users
-- Like posts
-- Comment
-- Connect with other people
-- Collaborate based on their connections
-
-### Vedant's Role
-
-**Role:**
-
-- Frontend Developer
-- UI Developer
-- Architecture Contributor
-
-### Technologies
-
-- Next.js
-- TypeScript
-- Redux
-- WebSockets
-
-### What Vedant Built
-
-Vedant built the UI screens across the application.
-
-He also contributed to designing and building a robust frontend architecture.
-
-One of his major contributions was the chat interface.
-
-### Technical Challenge: Chat Interface
-
-One of the more challenging parts of the project was implementing the chat experience across both desktop and mobile devices.
-
-The user flow needed to behave differently depending on the device.
-
-The challenge was therefore not simply making the interface responsive. The interaction model itself needed to be adapted for desktop and mobile users.
-
-### Solution
-
-WebSockets were used to support real-time communication.
-
-From a UI and UX perspective, Vedant separated the user flows for desktop and mobile instead of attempting to force both experiences into the same interaction model.
-
-### Result
-
-The application achieved a sleek user interface and grew to more than 1,000 users.
-
-The application is actively used by the client.
-
-### Link
-
-https://interconnect.blockchainforimpact.in/landing
-
----
-
-# Rider Tracker
-
-## Overview
-
-Rider Tracker is a sub-application within the Whizz food-delivery ecosystem.
-
-The application tracks rider-related information, including:
-
-- Rider location
-- Mobile device information
-- Device model
-- Battery percentage
-- Background location
-
-The system is designed to track riders even when the application is running in the background.
-
-### Vedant's Role
-
-Vedant built the application from start to finish.
-
-His responsibilities included:
-
-- Frontend development
-- Backend development
-- Architecture
-- Implementation
-- Integration
-- Production deployment
-
-### Technologies
-
-- React Native
-- React Native CLI
-- Expo libraries
-
-### What Vedant Built
-
-Vedant developed the complete application.
-
-He was involved in the architecture, frontend, backend, location tracking functionality, and production deployment.
-
-### Major Technical Challenge: Background Location
-
-The most difficult technical problem was implementing background location tracking.
-
-The application had a constraint that it needed to use React Native CLI.
-
-React Native CLI did not provide the required background-location functionality in the straightforward way Vedant initially expected.
-
-### Approaches Investigated
-
-Vedant explored several possible approaches, including:
-
-- Picture-in-picture style approaches
-- Home-screen application mechanisms
-- Other React Native approaches for maintaining background functionality
-
-These approaches did not solve the problem adequately.
-
-### Final Solution
-
-Vedant eventually implemented a hybrid approach using Expo libraries together with the React Native application.
-
-The Expo background-location capabilities provided the functionality required to track the rider's location while the application was running in the background.
-
-### Result
-
-The solution worked successfully and the application was deployed to the Google Play Store.
-
-### Link
-
-https://play.google.com/store/apps/details?id=com.whizzrider&pcampaignid=web_share
-
-### Project Pride
-
-Rider Tracker is one of the projects Vedant is particularly proud of because he implemented the application from scratch and solved a difficult mobile-platform constraint involving background location tracking.
-
----
-
-# Whizz Web Application
-
-## Overview
-
-Whizz is a local food-delivery application developed around WhatsApp-based ordering and a web application.
-
-The system was initially developed to operate in areas including:
-
-- Nungambakkam
-- Anna Nagar
-
-in Chennai.
-
-### Vedant's Role
-
-Vedant worked primarily on:
-
-- Menu pages
-- Client dashboards
-- Required frontend pages
-- Order-related interfaces
-
-### Technologies
-
-- Next.js
-- TypeScript
-- Redux
-
-### What Vedant Built
-
-Vedant developed the necessary menu pages and dashboards for the application.
-
-### Technical Challenge: Order Tracking
-
-One of the challenges was tracking orders through different stages of the delivery process.
-
-The application needed a reliable flow for tracking orders from the restaurant through to delivery.
-
-### Solution
-
-Vedant implemented a separate tracking system to ensure that orders could move through the different stages seamlessly.
-
-### Result
-
-The application successfully reached more than 500 users.
-
----
-
-# RAG Experience at TMCC
-
-Vedant has worked on a Retrieval-Augmented Generation (RAG) system for a client.
-
-## Purpose
-
-The system was designed around a client's employee database.
-
-The objective was to allow users to retrieve precise information and analytics about employees using natural-language interaction.
-
-Instead of requiring users to manually search through large amounts of employee data, the RAG system could retrieve relevant information and use an LLM to generate responses.
-
-## Data Source
-
-The source data came from the client's databases.
-
-## Technologies and Concepts
-
-Vedant worked with:
-
-- RAG
-- Vector embeddings
-- Hugging Face embedding models
-- Pinecone
-- Llama models
-- Chunking
-- LLMs
-
-## RAG Pipeline Concepts
-
-The system involved concepts such as:
-
-1. Client database
-2. Data processing
-3. Chunking
-4. Embedding generation
-5. Vector storage
-6. Similarity retrieval
-7. LLM processing
-8. Response generation
-
-Pinecone was used as the vector database.
-
-Hugging Face embedding models were used for generating embeddings.
-
-Llama models were used as the LLM layer.
-
----
-
-# LLM Experience at TMCC
-
-Vedant has experimented with and worked with multiple large language model ecosystems.
-
-Technologies and platforms he has used include:
-
-- ChatGPT
-- Gemini
-- Claude
-- Perplexity
-- Groq
-- Hugging Face
-- Llama models
-
-His LLM work has covered multiple application patterns.
-
-## LLM Use Cases
-
-### Classification
-
-Using LLMs to classify information into meaningful categories.
-
-### Document Extraction
-
-Using LLMs to extract structured information from documents.
-
-### Chatbots
-
-Building conversational interfaces powered by LLMs.
-
-### RAG
-
-Using retrieval systems together with LLMs to answer questions based on external knowledge.
-
-### Summarization
-
-Using LLMs to summarize documents or information.
-
-### Generation
-
-Using LLMs to generate content or structured outputs.
-
-### Evaluation
-
-Using LLMs and related techniques to evaluate generated results.
-
----
-
-# Model Fine-Tuning
-
-Vedant has researched model fine-tuning and experimented with fine-tuning models for learning purposes.
-
-His fine-tuning experience was primarily exploratory and educational rather than production-scale model training.
-
-Therefore, he should not be described as having extensive production fine-tuning experience.
-
----
-
-# Frontend Engineering at TMCC
-
-A major part of Vedant's work at TMCC is frontend engineering.
-
-He has worked on:
-
-- Complex dashboards
-- Forms
-- Data visualization
-- Chat interfaces
-- Mobile applications
-- Responsive layouts
-- Component systems
-- Animations
-- State management
-- API integrations
-- Authentication
-- Performance optimization
-
-His frontend work spans both web and mobile applications.
-
-He particularly enjoys building interfaces and solving difficult frontend problems.
-
----
-
-# Difficult Technical Problems at TMCC
-
-## Background Location Tracking
-
-One of the most difficult technical problems Vedant solved was background location tracking in the Rider Tracker application.
-
-### Problem
-
-The application needed to track rider location in the background while being constrained to React Native CLI.
-
-### Investigation
-
-Vedant explored multiple approaches, including:
-
-- Picture-in-picture approaches
-- Home-screen mechanisms
-- Other React Native techniques
-
-These approaches did not provide the required functionality.
-
-### Solution
-
-He implemented a hybrid approach using Expo libraries within the React Native application.
-
-### Result
-
-The background location functionality worked successfully and the application was deployed to production.
-
----
-
-# Interconnect Chat Experience
-
-Another challenging problem was designing the chat experience in Interconnect.
-
-### Problem
-
-The chat system needed to work across desktop and mobile devices.
-
-The user flows were significantly different between the two platforms.
-
-### Solution
-
-Vedant used WebSockets for real-time communication and designed separate interaction flows for desktop and mobile users.
-
-### Result
-
-The project achieved a polished UI and was actively used by more than 1,000 users.
-
----
-
-# TMCC Achievements and Pride
-
-The projects Vedant is particularly proud of include:
-
-## Rider Tracker
-
-Vedant is proud of Rider Tracker because he built the application from scratch, including frontend, backend, architecture, and deployment.
-
-The background-location problem was also a particularly challenging technical problem that required him to investigate multiple approaches before arriving at a working hybrid solution.
-
-## Interconnect
-
-Vedant is also proud of Interconnect because he was able to develop the UI quickly while contributing to the frontend architecture.
-
-The project required complex responsive flows and real-time chat functionality.
+**Chat across two interaction models.** Interconnect's chat needed to work on desktop and
+mobile, where the user flows genuinely differed rather than simply needing responsive
+layout. Vedant separated the interaction flows for the two rather than forcing both into a
+single model, consuming the WebSocket layer for real-time delivery.
 
 ---
 
 # WOFO
 
-## Company / Engagement Overview
+**Freelance / early-stage engagement · Pune · February – May 2024**
 
-**Organization:** WOFO
-**Period:** February 2024 – May 2024
-**Location:** Pune, India
-**Type:** Freelance / Short-term startup engagement
+WOFO was a startup building a digital document-tracking system aimed at reducing the
+difficulty of getting documents approved across levels of educational institutions. The
+product involved organisational hierarchies, document generation, digital signatures,
+letterheads, templates, and approval workflows.
 
-WOFO was a startup that was building its product from scratch.
+Vedant joined early and worked on system architecture, database schema design, React
+component architecture, and frontend implementation. The architecture needed to represent
+institutional hierarchies and support approval workflows between levels.
 
-Vedant joined during an early stage and was involved in establishing the system rather than simply implementing isolated features.
+He also mentored interns, focusing on clean and modular code, project structure, React and
+Git, with the aim of helping them build maintainable applications rather than merely
+working ones.
 
-The experience was short but highly insightful because he was involved in multiple parts of product development.
-
----
-
-# WOFO Product
-
-WOFO was developing a digital document tracking system.
-
-The system aimed to reduce the difficulty of getting documents approved through different levels of educational institutions.
-
-The platform involved concepts such as:
-
-- Organizational hierarchies
-- Document generation
-- Digital signatures
-- Letterheads
-- Templates
-- Document approval workflows
-
----
-
-# Vedant's Role at WOFO
-
-Vedant was involved in:
-
-- System architecture
-- Database schema design
-- React component architecture
-- Frontend implementation
-- Product development
-- Technical mentoring
-
-He was involved from the architecture stage through implementation.
-
----
-
-# Architecture Work at WOFO
-
-Vedant worked on designing the architecture for the platform.
-
-This included:
-
-- Hierarchy systems
-- Database schemas
-- React component structures
-- Application organization
-
-The architecture needed to represent the hierarchy of educational institutions and support document approval workflows between different levels.
-
----
-
-# Mentoring at WOFO
-
-Vedant also mentored interns.
-
-He focused on teaching:
-
-- Clean code
-- Modular code
-- Project structure
-- React.js
-- Git
-- Good development practices
-
-The goal was to help interns understand how to build maintainable React applications rather than simply making their code work.
-
----
-
-# What Vedant Learned at WOFO
-
-WOFO gave Vedant experience with early-stage product development.
-
-Unlike working on an already established application, he had to think about:
-
-- Architecture
-- Product structure
-- Database design
-- Component organization
-- Development standards
-- Team practices
-
-This experience strengthened his understanding of system architecture and product development.
+The engagement was short but gave him experience of early-stage product work, where
+architecture, structure and standards have to be decided rather than inherited.
 
 ---
 
 # Procedure — Product Development 101 Bootcamp
 
-## Overview
+**Mumbai · August – September 2023**
 
-**Organization:** Procedure
-**Program:** Product Development 101 Bootcamp
-**Period:** August 2023 – September 2023
-**Location:** Mumbai, India
+A full-stack product development bootcamp with a group of around ten participants,
+emphasising collaborative development, architecture, TypeScript and design patterns.
 
-Procedure was a full-stack product development bootcamp.
+The group used **mob programming**: one person writing code while the rest reviewed and
+guided the implementation, with roles rotating frequently. Projects included an elevator
+problem and a more involved IPL auctioning system. Participants were assigned design
+patterns and taught them to the group; Vedant worked with the Observer and Decorator
+patterns.
 
-Vedant participated as part of a group of approximately 10 people.
-
-The program emphasized collaborative software development, architecture, TypeScript, design patterns, and practical product development.
-
----
-
-# Mob Programming at Procedure
-
-One of the major development practices used during the bootcamp was mob programming.
-
-Mob programming is a collaborative development approach where a group of developers works together on the same problem, usually with one person actively writing code while the rest of the group discusses, reviews, and guides the implementation.
-
-The group frequently switched roles and continuously provided feedback.
-
-This enabled the team to identify problems quickly and make decisions collaboratively.
-
----
-
-# Projects at Procedure
-
-The team worked on multiple applications.
-
-These included:
-
-- A First Elevator problem
-- A more complex IPL auctioning system
-
-The projects required the team to think about:
-
-- Application architecture
-- TypeScript
-- Product requirements
-- Design patterns
-- Collaborative development
-- Code organization
-
----
-
-# Design Patterns
-
-During the bootcamp, participants were assigned design patterns and conducted teaching sessions for the rest of the group.
-
-Vedant remembers working with patterns including:
-
-- Observer Pattern
-- Decorator Pattern
-
-The teaching sessions required participants to understand a pattern deeply enough to explain it to other developers and demonstrate its application.
-
----
-
-# Issue Resolution
-
-Vedant previously described the bootcamp as improving issue resolution speed by approximately 60%.
-
-The primary reason was the collaborative mob-programming workflow.
-
-Because peers were continuously reviewing the implementation and providing immediate feedback, issues could often be identified and resolved faster than they would have been through an isolated development workflow.
-
-The 60% figure should therefore be understood in the context of the team's collaborative development experience rather than as a formal benchmark.
-
----
-
-# What Vedant Learned at Procedure
-
-The bootcamp helped Vedant develop experience with:
-
-- Full-stack development
-- TypeScript
-- Architecture
-- Design patterns
-- Collaborative development
-- Mob programming
-- Peer feedback
-- Code quality
-- Product development
-
-It also helped him understand how development practices affect the speed and quality of a software team.
+**On the 60% figure.** Vedant has previously described the bootcamp as improving issue
+resolution speed by around 60%. That reflects the effect of continuous peer review in a
+mob-programming workflow, in the context of a two-month bootcamp. It is not a formal
+benchmark and should not be presented as a professional outcome.
 
 ---
 
 # IBC Cube
 
-## Overview
+**Machine Learning Engineer Intern · Mumbai · June – August 2023**
 
-**Organization:** IBC Cube
-**Period:** June 2023 – August 2023
-**Location:** Mumbai, India
-**Role:** Machine Learning Engineer Intern
+Vedant's first internship, working on computer vision for road infrastructure surveying.
 
-IBC Cube was Vedant's first internship.
+**His contribution:** substantial image and data labelling and annotation, data
+preprocessing using OpenCV, data cleaning, contributing to model evaluation alongside the
+team lead, collaborative dataset creation, and Python automation of repetitive
+data-processing steps.
 
-He worked as an AI/ML engineer with a focus on computer vision and applied machine learning.
+**Handled by the team lead:** model development, training and deployment.
 
----
+The system analysed road survey imagery and video — captured in part via bonnet camera test
+runs — to identify infrastructure assets and surface defects, aligned with NHAI guidelines.
 
-# Road Asset and Defect Detection
-
-One of the major projects involved detecting road infrastructure assets and defects automatically.
-
-The system analyzed road imagery and videos to identify infrastructure elements and road defects.
+The specific model architecture used is not remembered, and the work should never be
+described as using YOLO or any named CNN. See `road-assets-ml.md`.
 
 ---
 
-# Assets Detected
+# Career progression
 
-The system was designed to detect road infrastructure assets such as:
+**IBC Cube** — applied machine learning, computer vision, data preprocessing and labelling,
+Python automation.
 
-- Street lights
-- Crash barriers
-- Medians
-- Trees
-- Kerbs
+**Procedure** — product development, full-stack work, TypeScript, architecture, design
+patterns, collaborative development.
 
----
+**WOFO** — system architecture, database design, React component architecture, early-stage
+product development, mentoring.
 
-# Defects Detected
+**TMCC** — frontend and mobile engineering at production scale, AI and LLM application
+work, end-to-end ownership on smaller systems, deployment, performance optimisation.
 
-The system also detected road defects such as:
-
-- Potholes
-- Road scaling
-- Other road-surface defects
-
-The detected assets and defects could then be counted and analyzed.
+The through-line is movement from specialised ML support work toward product engineering
+combined with AI application development.
 
 ---
 
-# Input Data
+# Preferred work
 
-The system worked with road-survey data in the form of:
-
-- Images
-- Videos
-
-The team conducted test runs using a bonnet camera that captured road imagery.
+Vedant most enjoys building interfaces, solving difficult frontend problems, developing AI
+applications, working with retrieval systems, and thinking about system architecture and
+product development. His strongest interest sits at the intersection of frontend
+engineering, product development and AI-powered applications.
 
 ---
 
-# Vedant's Responsibilities
-
-Vedant's primary contributions included:
-
-### Data Preprocessing
-
-He worked on preprocessing the collected data before it was used by the machine-learning system.
-
-### Data Cleaning
-
-He worked on cleaning and preparing the data for the model.
-
-### Model Evaluation
-
-Vedant contributed to evaluating model performance together with the team lead.
-
-### Model Training
-
-Model training was primarily handled by the team lead, although Vedant gained exposure to the process.
-
-### Dataset Creation
-
-Dataset creation was performed collaboratively by the team.
-
-### Deployment
-
-Deployment was primarily handled by the team lead.
-
----
-
-# Technologies at IBC Cube
-
-Vedant worked with:
-
-- Python
-- TensorFlow
-- OpenCV
-- Computer Vision
-- Machine Learning
-
-He specifically used OpenCV for image preprocessing.
-
-The exact TensorFlow model architecture used during the project is not currently remembered by Vedant.
-
-Therefore, the system should not be described as specifically using YOLO or a particular CNN architecture unless additional information is recovered.
-
----
-
-# What Vedant Learned at IBC Cube
-
-IBC Cube was Vedant's first internship and gave him practical exposure to AI/ML engineering.
-
-One of his major takeaways was learning how Python scripts can be used to automate repetitive data-processing and machine-learning workflows.
-
-He gained practical experience with:
-
-- Data preprocessing
-- Data cleaning
-- Computer vision
-- Model evaluation
-- TensorFlow
-- OpenCV
-- Python automation
-- Applied machine learning
-
----
-
-# Career Progression
-
-Vedant's professional experience shows a progression from applied machine learning into broader software engineering and AI application development.
-
-## IBC Cube
-
-Started with:
-
-- Machine learning
-- Computer vision
-- Data preprocessing
-- Python automation
-
-## Procedure
-
-Expanded into:
-
-- Product development
-- Full-stack development
-- TypeScript
-- Architecture
-- Design patterns
-- Collaborative development
-
-## WOFO
-
-Expanded further into:
-
-- System architecture
-- Database design
-- React architecture
-- Product development
-- Technical mentorship
-- Clean-code practices
-
-## TMCC
-
-Currently works across:
-
-- Frontend engineering
-- React
-- Next.js
-- React Native
-- System architecture
-- AI applications
-- RAG
-- LLM integrations
-- Mobile applications
-- Backend development
-- Deployment
-- Performance optimization
-
-This progression reflects Vedant's movement from specialized machine-learning work toward full product engineering combined with AI systems.
-
----
-
-# Preferred Areas of Work
-
-Vedant particularly enjoys:
-
-1. Building interfaces
-2. Solving difficult frontend problems
-3. Building AI applications
-4. Working with RAG systems
-5. System architecture
-6. Product development
-
-His strongest interest is at the intersection of frontend engineering, product development, and AI-powered applications.
-
----
-
-# Professional Strengths
-
-Based on his experience, Vedant's strongest professional areas include:
-
-- UI engineering
-- React development
-- Next.js development
-- React Native development
-- Frontend architecture
-- System architecture
-- AI application development
-- RAG systems
-- LLM integrations
-- Real-time interfaces
-- Responsive application design
-- State management
-- API integration
-- Product development
-- Problem solving
-
----
-
-# Frequently Asked Questions
-
-## What does Vedant do at TMCC?
-
-Vedant works as a Developer and AI/ML Engineer. His responsibilities include frontend development, React Native, Next.js, UI engineering, RAG systems, LLM integrations, architecture, API integrations, and deployment.
-
-## What is Vedant's strongest area?
-
-Vedant is particularly strong in frontend and UI engineering, especially React, Next.js, and React Native. He also has growing experience in AI applications, RAG, LLM integrations, and system architecture.
-
-## What is Vedant's most challenging project?
-
-Rider Tracker was one of his most technically challenging projects because he needed to implement background location tracking under a React Native CLI constraint.
-
-## What project is Vedant most proud of?
-
-Vedant is particularly proud of Rider Tracker because he built it from scratch across frontend, backend, architecture, and deployment.
-
-He is also proud of Interconnect because he developed its UI quickly and contributed to its architecture.
-
-## Has Vedant worked with RAG?
-
-Yes. Vedant worked on a client-facing RAG system based on employee data. The system used database data, chunking, Hugging Face embedding models, Pinecone as the vector database, and Llama models for the LLM layer.
-
-## Has Vedant fine-tuned LLMs?
-
-Vedant has researched and experimented with model fine-tuning for learning purposes. His fine-tuning experience should not be represented as extensive production-scale fine-tuning experience.
-
-## What LLMs has Vedant worked with?
-
-Vedant has worked with or experimented with ChatGPT, Gemini, Claude, Perplexity, Groq, and Hugging Face Llama models.
-
-## What type of frontend work has Vedant done?
-
-His frontend work includes dashboards, forms, data visualization, chat interfaces, mobile applications, responsive layouts, component systems, animations, state management, API integrations, authentication, and performance optimization.
-
-## What did Vedant do at WOFO?
-
-Vedant helped build the product from the ground up. He worked on architecture, database schema design, React components, frontend implementation, and also mentored interns on clean code, modular architecture, React, Git, and project structure.
-
-## What did Vedant do at Procedure?
-
-He participated in a full-stack product development bootcamp involving collaborative development, mob programming, TypeScript, architecture, design patterns, and projects including an IPL auctioning system.
-
-## What did Vedant do at IBC Cube?
-
-Vedant worked as a Machine Learning Engineer Intern on computer vision projects involving road asset and defect detection. His primary contributions were data preprocessing, data cleaning, and model evaluation, using Python, TensorFlow, and OpenCV.
-
-## What kind of work does Vedant enjoy?
-
-Vedant particularly enjoys building interfaces, solving difficult frontend problems, developing AI applications, working with RAG systems, designing system architectures, and product development.
+# Frequently asked questions
+
+**What did Vedant do at TMCC?**
+He was a Software Developer from September 2024 to February 2026, working primarily on
+frontend and mobile engineering for client and internal products, plus AI and LLM
+application features, API integration and deployment. On Rider Tracker he owned the entire
+application including its backend.
+
+**What is his strongest area?**
+Frontend and UI engineering — React, Next.js and React Native — with growing practical
+experience in backend work and AI application development.
+
+**Which project was most technically challenging?**
+Rider Tracker, because of background location tracking under a React Native CLI constraint.
+
+**Which project is he most proud of?**
+Rider Tracker, because he built it from scratch across frontend, backend, architecture and
+deployment. He is also proud of Interconnect's chat experience, which required separate
+interaction models for desktop and mobile.
+
+**Has he worked with RAG?**
+Yes, on one client system at TMCC. Details are private; he can discuss it at a generic
+architectural level only.
+
+**Has he fine-tuned LLMs?**
+He has experimented with fine-tuning using the Hugging Face Trainer for learning purposes.
+This is not production fine-tuning experience.
+
+**What backend work has he actually done?**
+A Python/Flask backend with SQLite for Rider Tracker, a Python/Flask inference service for
+WordSense AI, an Express backend with BullMQ workers and Redis queues for the AI Curriculum
+Design Engine, Drizzle ORM over SQLite/Postgres for CurryCue, and the points and
+leaderboard endpoints on SWINS. The first four were solo.
+
+**What is he still developing?**
+Automated testing, CI/CD, raw SQL, monitoring and observability, and system design at
+production scale.

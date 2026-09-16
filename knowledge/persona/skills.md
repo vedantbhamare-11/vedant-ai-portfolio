@@ -1,31 +1,78 @@
+---
+title: Technical Skills
+type: profile
+visibility: public
+voice: third-person
+last_updated: 2026-09-14
+version: 2.0
+note: Four-level taxonomy. Depth is stated honestly; presence in one project does not imply skill.
+---
 
 # Technical Skills
 
-Vedant has a diverse technical stack spanning frontend development, backend architecture, and artificial intelligence.
+Skills are graded by actual depth of use. A technology used once in one project is listed
+as such, not as a strength.
 
-**Frontend & UI Engineering**
+## Strong — frequently used across multiple projects and professional work
 
-* React JS & Next JS
-* React Native (Mobile Development)
-* TypeScript & JavaScript
-* Web Technologies (HTML/CSS)
-* Redux (State Management)
-* Tailwind CSS & Framer Motion
+- React
+- Next.js
+- React Native
+- TypeScript
+- JavaScript (ES6+)
+- Tailwind CSS
+- Frontend architecture and component design
+- State management
+- Responsive and platform-adaptive UI
+- REST API integration
 
-**Backend & Databases**
+## Practical working experience — real and shipped, narrower depth
 
-* Node JS
-* SQL
-* MongoDB
+- Node.js / Express
+- Python / Flask
+- Redux
+- Zustand
+- MongoDB
+- Docker
+- Expo (TaskManager, background location)
+- Firebase Phone Authentication
+- Chrome Extension Manifest V3 and background service workers
+- LLM API integration — Gemini, Groq / Llama, Claude Bedrock, Azure GPT-4o, ElevenLabs
+- Prompt engineering and output guardrails
+- Vercel deployment
 
-**AI & Machine Learning**
+## Used in one specific project — real, but single instance
 
-* Gen AI & LLMs
-* Artificial Intelligence & Machine Learning
-* Prompt Engineering
-* Hugging Face
-* Python
+| Technology | Where |
+|---|---|
+| BullMQ + Redis (queues, workers, retries, backoff) | AI Curriculum Design Engine |
+| Retrieval-augmented generation — embeddings, vector search, LLM layer | One client system at TMCC |
+| Drizzle ORM over SQLite / Postgres | CurryCue |
+| SQLite | Rider Tracker |
+| OpenCV (image preprocessing) | IBC Cube |
+| Gunicorn, Hugging Face Spaces | WordSense AI |
+| Framer Motion, Radix UI, CMDK | CurryCue |
+| Material UI | Trip Planner (archived) |
+| WebSocket *consumption* on the client — never the server layer | Interconnect, SWINS |
 
-**Tools & DevOps**
+## Learning / exploratory — studied, not shipped
 
-* GitHub
+- LLM fine-tuning — experimented using the Hugging Face Trainer on a dataset. Educational
+  only. **Not production fine-tuning experience.**
+- System design at production scale
+- TensorFlow — used adjacent to models trained by a team lead. **Not a claimable skill.**
+
+## Honest gaps
+
+These are real and worth stating plainly rather than hiding:
+
+- **Automated testing** — rarely written; testing is mostly manual
+- **CI/CD** — limited to Vercel auto-deploy on push; no pipelines built
+- **Raw SQL** — basic queries; most database work goes through ORMs
+- **Monitoring and observability** — no experience
+- **Algorithmic interviews** — easy problems solid, medium problems inconsistent
+
+## Explicitly not claimed
+
+AWS, MediaPipe, and TensorFlow as a skill. These appeared in earlier versions of this
+knowledge base but describe work done by others.

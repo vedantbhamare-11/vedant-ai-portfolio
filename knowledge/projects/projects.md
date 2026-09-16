@@ -1,56 +1,115 @@
+---
+title: Project Index
+type: index
+visibility: public
+voice: third-person
+last_updated: 2026-09-14
+version: 2.0
+note: Tiered. Stacks here must match the deep-dive files. Unverified metrics have been removed.
+---
 
 # Projects
 
-**AI Curriculum Design Engine**
+Ordered by how much of the work is Vedant's and how verifiable it is.
 
-* **Description:** AI-driven exam creator generating strict, schema-validated assessment papers anchored to uploaded textbooks. Features BullMQ/Redis asynchronous background task processing and multimodal scanned PDF vision handling via Gemini Pro.
-* **Technologies:** Gemini Pro, Next.js, BullMQ, Redis, Node.js
-* **Link:** https://ai-curriculum-design-engine.vercel.app/
+---
 
-**CurryCue**
+## Tier 1 — lead with these
 
-* **Description:** AI-powered cooking assistant that generates personalized recipes based on ingredients you already have at home. Features dietary filters and GPT-4o integration.
-* **Technologies:** GPT-4o, Next.js, AI
-* **Link:** https://curry-cue.vercel.app
+### WordSense AI
+Chrome extension for context-aware reading. Highlight a word or short phrase on any page
+and a concise, domain-tuned definition streams in place. Built solo; live on the Chrome
+Web Store.
+**Stack:** Vanilla JavaScript (ES6+), Chrome Extension Manifest V3, Python 3, Flask,
+Gunicorn, Docker on Hugging Face Spaces, Groq LPUs running Llama-3.1-8B-Instant with
+failover to Llama-3.3-70b-versatile
+**Link:** https://chromewebstore.google.com/detail/wordsense/mnbcfmjkkeojdmhjcbelnijejfipehdj
+**Detail:** `wordsense.md`
 
-**WordSense AI**
+### AI Curriculum Design Engine
+Assessment generator for educators, producing curriculum-aligned question papers and
+marking schemes from uploaded material. Fully asynchronous so that large uploads never
+block the interface. Built solo; live.
+**Stack:** Next.js 15, Express.js, BullMQ, Upstash Redis, MongoDB Atlas, Gemini 2.5 Flash,
+Zustand, Tailwind CSS
+**Link:** https://ai-curriculum-design-engine.vercel.app/
+**Detail:** `ai-curriculum.md`
 
-* **Description:** 5-star Chrome extension providing instant word definitions, pronunciations, cross-language support, and dark mode compatibility driven by AI.
-* **Technologies:** Chrome Extension, AI, GPT, API
-* **Link:** https://chromewebstore.google.com/detail/wordsense/mnbcfmjkkeojdmhjcbelnijejfipehdj
+### CurryCue
+AI kitchen assistant that manages pantry inventory, suggests recipes from what is actually
+available, and supports hands-free cooking through voice. Built solo; live.
+**Stack:** Next.js 15, React 18, Zustand, Tailwind CSS, Drizzle ORM over SQLite/Postgres,
+Claude Bedrock, Azure GPT-4o, ElevenLabs, Stability AI, Framer Motion, Radix UI, CMDK
+**Link:** https://curry-cue.vercel.app/
+**Detail:** `currycue.md`
 
-**FocusForge**
+### Rider Tracker
+Real-time tracking application for delivery riders, with continuous background location,
+device and battery telemetry, and OTP authentication. Built end to end by Vedant at TMCC —
+frontend, backend, architecture and deployment.
+**Stack:** React Native (CLI with Expo libraries), Expo TaskManager and Location, Firebase
+Phone Auth, Python, Flask, SQLite
+**Link:** Google Play — *package ID pending verification*
+**Detail:** `rider-tracker.md`
 
-* **Description:** All-in-one productivity dashboard with a Pomodoro timer, habit tracker, calendar, focus audio, and gamified points system built for deep work.
-* **Technologies:** Next.js, TypeScript, Tailwind
+---
 
-**Jupiter**
+## Tier 2 — supporting work
 
-* **Description:** AI-powered content creation platform generating dynamic social media posts across platforms using Gen AI/LLMs. Achieved 90% client approval on first drafts.
-* **Technologies:** LLMs, Gen AI, Social Media
+### Interconnect
+Professional networking and research-sharing platform for a client, with both web and
+mobile clients. Vedant built the frontend on both; the backend and WebSocket server were
+built by other engineers. The client reported the platform passing 1,000 users.
+**His stack:** Next.js, React Native, TypeScript, Redux, WebSocket consumption
+**Link:** https://interconnect.blockchainforimpact.in/landing
+**Detail:** `interconnect.md`
 
-**Cashflow**
+### SWINS
+Peer-appreciation platform with a social feed, leaderboards and chat. Vedant built the
+React Native UI, client state and real-time client behaviour, and wrote the points and
+leaderboard endpoints on the backend. The rest of the backend was built by others.
+**His stack:** React Native, TypeScript, Redux; Node.js for the endpoints he wrote
+**Link:** Google Play — *package ID pending verification*
+**Detail:** `swins.md`
 
-* **Description:** Full-stack contract management system with e-signatures, automated invoicing, Razorpay integration, and cash flow analytics. Reduced payment delays by 25%.
-* **Technologies:** Razorpay, Node.js, Analytics
+### Whizz web application
+Local food-delivery web application. Vedant built the menu pages, client dashboards and
+order interfaces, including the order-stage tracking flow. The client reported the
+application passing 500 users.
+**His stack:** Next.js, TypeScript, Redux
 
-**TeambO**
+### TeambO
+Internal hierarchical task-tracking tool with boards, time tracking and analytics.
+Vedant's contribution was frontend and UI only.
 
-* **Description:** Hierarchical task tracking system with drag-and-drop boards, AI insights, time tracking, and productivity analytics. Cut task resolution time by 25%.
-* **Technologies:** AI, Drag & Drop, Analytics
+---
 
-**Interconnect**
+## Tier 3 — archive
 
-* **Description:** In-house LinkedIn-style platform for client research sharing with profiles, content feeds, advanced search, and analytics.
-* **Technologies:** React Native, WebSockets, MongoDB
-* **Link:** https://interconnect.blockchainforimpact.in/landing
+### FocusForge
+Productivity dashboard combining a Pomodoro timer, habit tracker, calendar, focus audio and
+a points system. Client-side only. Built solo.
+**Stack:** Next.js, TypeScript, Tailwind CSS, React Hooks and Context, LocalStorage
+**Link:** https://github.com/vedantbhamare-11/FocusForge-Productivity-Tracker
+**Detail:** `focusforge.md`
 
-**Whizz & Whizz Rider**
+### SPI Game
+Browser-based multiplayer strategy simulation with a hand-built game loop, no framework.
+Early project, kept for the from-scratch engine work.
+**Stack:** JavaScript, HTML5, CSS
+**Detail:** `spi-game.md`
 
-* **Description:** Hyper-local food delivery app and rider tracking app with GPS navigation and order management. Optimized delivery by 20%.
-* **Technologies:** React Native, Node.js, MongoDB
+### Road Assets ML
+Computer-vision project at IBC Cube detecting road infrastructure assets and surface
+defects. Vedant's contribution was labelling, preprocessing, cleaning and evaluation
+support; models were developed, trained and deployed by the team lead.
+**His tools:** Python, OpenCV
+**Detail:** `road-assets-ml.md`
 
-**SWINS**
+---
 
-* **Description:** Social media-style platform for companies to appreciate peer work with points systems, leaderboards, and real-time notifications.
-* **Technologies:** React Native, Redux, WebSockets
+## Not featured
+
+- **Trip Planner** — travel itinerary generator. Archived. See `trip-planner.md`.
+- **Jupiter** — AI content generation platform, TMCC client work. Limited contribution.
+- **Cashflow** — contract and invoicing system, TMCC client work. Limited contribution.

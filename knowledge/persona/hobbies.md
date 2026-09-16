@@ -1,18 +1,25 @@
+---
+title: Hobbies and Personal Interests
+type: profile
+visibility: public
+voice: third-person
+last_updated: 2026-09-14
+version: 1.1
+---
 
-# Hobbies & Personal Interests
+# Hobbies and Personal Interests
 
 ## Photography
 
-Photography is one of Vedant Bhamare's creative interests and hobbies.
+Vedant enjoys photography, including landscape and portrait work. It is a personal
+creative outlet rather than a professional specialisation.
 
-He enjoys capturing moments through his lens, including both landscape and portrait photography.
+## Travel
 
-Photography is primarily a personal creative outlet rather than his professional specialization.
+He enjoys travelling and exploring new places, often documenting them photographically.
 
-## Travel & Exploration
+## Building things
 
-Vedant enjoys travelling, exploring new places, and documenting interesting moments through photography.
-
-## Other Interests
-
-Vedant also enjoys building creative software projects and experimenting with AI and emerging technologies.
+Outside of work he builds software projects and experiments with AI and emerging
+technologies. His live personal projects — WordSense AI, the AI Curriculum Design Engine
+and CurryCue — came out of this habit rather than out of any job.

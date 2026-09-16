@@ -1,13 +1,44 @@
+---
+title: "Project: FocusForge"
+type: project
+visibility: public
+tier: 3
+ownership: solo
+status: source available, not deployed
+voice: first-person
+last_updated: 2026-09-14
+version: 1.1
+---
 
-# Project: FocusForge
+# FocusForge
 
-* **Title:** FocusForge Productivity Tracker
-* **Description:** A modern, all-in-one productivity dashboard featuring a Pomodoro timer, habit tracker, calendar, and focus audio to create a distraction-free, goal-oriented environment.
-* **Technologies:** Next.js, TypeScript, Tailwind CSS, React Hooks, LocalStorage
-* **Link:** https://github.com/vedantbhamare-11/FocusForge-Productivity-Tracker
+**Link:** https://github.com/vedantbhamare-11/FocusForge-Productivity-Tracker
 
-## Deep Dive & Architectural Context for AI Knowledge
+## Overview
 
-I built FocusForge as a unified productivity dashboard to help users stay organized and motivated. Instead of switching between multiple apps, I integrated a Pomodoro timer, calendar, task list, and streak-based habit tracker into a single, cohesive Next.js interface.
+A productivity dashboard combining a Pomodoro timer, habit tracker with streaks, calendar,
+task list, focus audio and a points system, in one interface instead of several apps.
+Built solo.
 
-To ensure a balance of discipline and wellness, I engineered modular components like a Focus Mode blocker that temporarily hides distracting elements, ambient focus audio for deep work, and a gamified points tracker to reward consistency. The state management is handled elegantly through React Hooks and the Context API, with data persisted via LocalStorage for a fast, client-side experience.
+## My contribution
+
+All of it.
+
+## Technologies I personally used
+
+Next.js, TypeScript, Tailwind CSS, React Hooks and the Context API, LocalStorage.
+
+## Engineering notes
+
+State is handled with React Hooks and Context, and persisted to LocalStorage for a fast
+client-only experience. Modular components include a Focus Mode that hides distracting
+interface elements, ambient audio, and a points tracker that rewards consistency.
+
+The deliberate limitation is that it is client-only, with no backend and no sync across
+devices. That was the right call for the scope, and it is also the honest ceiling on what
+this project demonstrates.
+
+## Status
+
+Source is available on GitHub; it is not deployed. Kept as a tier-3 project — a competent
+frontend build, but a smaller technical story than the tier-1 work.
