@@ -7,7 +7,6 @@ last_updated: 2026-09-14
 version: 2.0
 note: Four-level taxonomy. Depth is stated honestly; presence in one project does not imply skill.
 ---
-
 # Technical Skills
 
 Skills are graded by actual depth of use. A technology used once in one project is listed
@@ -37,23 +36,23 @@ as such, not as a strength.
 - Expo (TaskManager, background location)
 - Firebase Phone Authentication
 - Chrome Extension Manifest V3 and background service workers
-- LLM API integration — Gemini, Groq / Llama, Claude Bedrock, Azure GPT-4o, ElevenLabs
+- LLM API integration — Gemini, Groq (GPT-OSS models), Claude Bedrock, Azure GPT-4o, ElevenLabs
 - Prompt engineering and output guardrails
 - Vercel deployment
 
 ## Used in one specific project — real, but single instance
 
-| Technology | Where |
-|---|---|
-| BullMQ + Redis (queues, workers, retries, backoff) | AI Curriculum Design Engine |
-| Retrieval-augmented generation — embeddings, vector search, LLM layer | One client system at TMCC |
-| Drizzle ORM over SQLite / Postgres | CurryCue |
-| SQLite | Rider Tracker |
-| OpenCV (image preprocessing) | IBC Cube |
-| Gunicorn, Hugging Face Spaces | WordSense AI |
-| Framer Motion, Radix UI, CMDK | CurryCue |
-| Material UI | Trip Planner (archived) |
-| WebSocket *consumption* on the client — never the server layer | Interconnect, SWINS |
+| Technology                                                             | Where                       |
+| ---------------------------------------------------------------------- | --------------------------- |
+| BullMQ + Redis (queues, workers, retries, backoff)                     | AI Curriculum Design Engine |
+| Retrieval-augmented generation — embeddings, vector search, LLM layer | One client system at TMCC   |
+| Drizzle ORM over SQLite / Postgres                                     | CurryCue                    |
+| SQLite                                                                 | Rider Tracker               |
+| OpenCV (image preprocessing)                                           | IBC Cube                    |
+| Gunicorn, Hugging Face Spaces                                          | WordSense AI                |
+| Framer Motion, Radix UI, CMDK                                          | CurryCue                    |
+| Material UI                                                            | Trip Planner (archived)     |
+| WebSocket*consumption* on the client — never the server layer       | Interconnect, SWINS         |
 
 ## Learning / exploratory — studied, not shipped
 
