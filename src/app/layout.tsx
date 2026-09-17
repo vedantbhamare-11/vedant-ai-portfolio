@@ -17,22 +17,24 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Vedant Bhamare | AI Portfolio",
   description:
-    "Interactive AI portfolio of Vedant Bhamare, a Software Developer & UI Engineer specializing in React, Next.js, and AI systems.",
+    "Interactive AI portfolio of Vedant Bhamare, a full-stack product engineer building AI-powered applications with React, Next.js, and LLM integrations.",
   keywords: [
     "Vedant Bhamare",
     "Portfolio",
     "AI",
-    "Frontend Developer",
+    "Full-Stack Developer",
     "Next.js",
     "React",
-    "UI Engineer",
-    "SDE",
+    "AI Engineer",
+    "Product Engineer",
+    "LLM",
+    "RAG",
   ],
   authors: [{ name: "Vedant Bhamare" }],
   openGraph: {
     title: "Vedant Bhamare | AI Portfolio",
     description:
-      "Interactive AI portfolio of Vedant Bhamare, a Software Developer & UI Engineer.",
+      "Interactive AI portfolio of Vedant Bhamare, a full-stack product engineer building AI-powered applications.",
     siteName: "Vedant Bhamare AI",
     type: "website",
   },
