@@ -13,21 +13,21 @@ interface PhotographyImage {
 // PHOTOGRAPHY IMAGES
 const images: PhotographyImage[] = [
   // LANDSCAPE
-  { src: "/Photography/1.jpg", orientation: "landscape" },
-  { src: "/Photography/2.jpg", orientation: "landscape" },
-  { src: "/Photography/3.jpg", orientation: "landscape" },
-  { src: "/Photography/4.jpg", orientation: "landscape" },
-  { src: "/Photography/12.jpg", orientation: "landscape" },
+  { src: "/photography/1.jpg", orientation: "landscape" },
+  { src: "/photography/2.jpg", orientation: "landscape" },
+  { src: "/photography/3.jpg", orientation: "landscape" },
+  { src: "/photography/4.jpg", orientation: "landscape" },
+  { src: "/photography/12.jpg", orientation: "landscape" },
 
   // PORTRAIT
-  { src: "/Photography/5.jpg", orientation: "portrait" },
-  { src: "/Photography/6.jpg", orientation: "portrait" },
-  { src: "/Photography/7.jpg", orientation: "portrait" },
-  { src: "/Photography/8.jpg", orientation: "portrait" },
-  { src: "/Photography/9.jpg", orientation: "portrait" },
-  { src: "/Photography/10.jpg", orientation: "portrait" },
-  { src: "/Photography/11.jpg", orientation: "portrait" },
-  { src: "/Photography/13.jpg", orientation: "portrait" },
+  { src: "/photography/5.jpg", orientation: "portrait" },
+  { src: "/photography/6.jpg", orientation: "portrait" },
+  { src: "/photography/7.jpg", orientation: "portrait" },
+  { src: "/photography/8.jpg", orientation: "portrait" },
+  { src: "/photography/9.jpg", orientation: "portrait" },
+  { src: "/photography/10.jpg", orientation: "portrait" },
+  { src: "/photography/11.jpg", orientation: "portrait" },
+  { src: "/photography/13.jpg", orientation: "portrait" },
 ];
 
 // SHUFFLE ARRAY
