@@ -5,6 +5,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
+import matter from "gray-matter";
 
 // Load environment variables from .env.local
 dotenv.config({ path: ".env.local" });
@@ -46,6 +47,24 @@ async function generateEmbedding(text: string) {
   }
 
   return embedding;
+}
+
+// INGESTION GATE
+// Every knowledge file must explicitly declare visibility: public in its
+// frontmatter. Missing or non-public visibility fails closed (skipped),
+// it is never assumed public. Never weaken this gate.
+function readIngestibleContent(filePath: string, file: string): string | null {
+  const raw = fs.readFileSync(filePath, "utf-8");
+  const { data: metadata, content } = matter(raw);
+
+  if (metadata.visibility !== "public") {
+    console.warn(
+      `⚠️  Skipping ${file}: visibility is "${metadata.visibility ?? "missing"}", not "public"`,
+    );
+    return null;
+  }
+
+  return content.trim();
 }
 
 // STORE DOCUMENT
@@ -100,7 +119,9 @@ async function seedProjects() {
 
     const filePath = path.join(directoryPath, file);
 
-    const content = fs.readFileSync(filePath, "utf-8");
+    const content = readIngestibleContent(filePath, file);
+
+    if (content === null) continue;
 
     await embedAndStore(
       `project-${projectId}`,
@@ -131,7 +152,9 @@ async function seedPersona() {
 
     const filePath = path.join(directoryPath, file);
 
-    const content = fs.readFileSync(filePath, "utf-8");
+    const content = readIngestibleContent(filePath, file);
+
+    if (content === null) continue;
 
     await embedAndStore(
       `persona-${sourceId}`,
