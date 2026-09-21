@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Bot, Loader2, Plus, X } from "lucide-react"; 
+import { ArrowRight, Bot, Plus, X } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { cn } from "@/lib/utils";
@@ -303,8 +303,10 @@ export default function Home() {
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white">
                   <Bot className="h-5 w-5" />
                 </div>
-                <div className="flex flex-1 items-center">
-                  <Loader2 className="h-5 w-5 animate-spin text-neutral-400" />
+                <div className="flex flex-1 flex-col gap-2 py-1">
+                  <div className="h-3 w-3/4 animate-pulse rounded-full bg-neutral-200" />
+                  <div className="h-3 w-1/2 animate-pulse rounded-full bg-neutral-200" style={{ animationDelay: "150ms" }} />
+                  <div className="h-3 w-5/12 animate-pulse rounded-full bg-neutral-200" style={{ animationDelay: "300ms" }} />
                 </div>
               </motion.div>
             )}
