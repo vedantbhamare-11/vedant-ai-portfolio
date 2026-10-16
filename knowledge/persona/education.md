@@ -6,13 +6,12 @@ voice: third-person
 last_updated: 2026-09-14
 version: 1.0
 ---
-
 # Education
 
 ## B.Tech, Computer Engineering — primary
 
 **Institution:** Mumbai University
-**Period:** 2019 – 2024
+**Period:** 2019 – 2023
 **CGPA:** 8.01
 
 This is the qualification to use in professional positioning, on the resume, and in
